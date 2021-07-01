@@ -7,7 +7,7 @@
 // {"farm_jstoken":"749a90f871adsfads8ffda7bf3b1576760","timestamp":"1610165423873","phoneid":"42c7e3dadfadsfdsaac-18f0e4f4a0cf"}
 let JxncTokens = [
   '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',//账号一的好友shareCode,不同好友中间用@符号隔开
-  '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',//账号二的好友shareCode，不同好友中间用@符号隔开
+  '{"farm_jstoken":"62ce350a23969c431c59f72c1d390398","timestamp":"1625070480390","phoneid":"4ce2b06b5cea9e48"}',//账号二的好友shareCode，不同好友中间用@符号隔开
   '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
   '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
   '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
