@@ -8,9 +8,6 @@
 let JxncTokens = [
   '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',//账号一的好友shareCode,不同好友中间用@符号隔开
   '{"farm_jstoken":"62ce350a23969c431c59f72c1d390398","timestamp":"1625070480390","phoneid":"4ce2b06b5cea9e48"}',//账号二的好友shareCode，不同好友中间用@符号隔开
-  '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
-  '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
-  '{"farm_jstoken":"e36885f4d991b682995752f9d3b6329c","timestamp":"1624637915753","phoneid":"748fac5bae175b29"}',
   
 ]
 // 判断github action里面是否有京喜农场 token 
