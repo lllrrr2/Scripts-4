@@ -27,7 +27,7 @@ console.log('\n====================Hello World====================\n')
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let cookiesArr = [],
   cookie = "",
-  message;
+  message = "";
 const inviteCodes = ['']
 const randomCount = $.isNode() ? 20 : 5;
 if ($.isNode()) {
