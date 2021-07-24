@@ -87,7 +87,7 @@ if ($.isNode()) {
     })
 async function showMsg() {
   if ($.errorMsg) return
-  allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日收入：${$.todayIncomeBean}京豆 🐶\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}(今日将过期${$.expirejingdou})京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+  allMessage += `${$.index}：${$.nickName || $.UserName}\n今收：${$.todayIncomeBean}豆 🐶\n昨入：${$.incomeBean}豆 🐶\n昨出：${$.expenseBean}豆 🐶\n当前京豆：${$.beanCount}(今过期${$.expirejingdou})豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n' : ''}`;
   // if ($.isNode()) {
   //   await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `账号${$.index}：${$.nickName || $.UserName}\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}京豆 🐶${$.message}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
   // }
@@ -335,7 +335,7 @@ function redPacket() {
             $.jdhRed = $.jdhRed.toFixed(2)
             $.balance = data.balance
             $.expiredBalance = ($.jxRedExpire + $.jsRedExpire + $.jdRedExpire).toFixed(2)
-            $.message += `\n当前总红包：${$.balance}(今日总过期${$.expiredBalance})元 🧧\n京喜红包：${$.jxRed}(今日将过期${$.jxRedExpire.toFixed(2)})元 🧧\n极速红包：${$.jsRed}(今日将过期${$.jsRedExpire.toFixed(2)})元 🧧\n京东红包：${$.jdRed}(今日将过期${$.jdRedExpire.toFixed(2)})元 🧧\n健康红包：${$.jdhRed}(今日将过期${$.jdhRedExpire.toFixed(2)})元 🧧`;
+            $.message += `\n总包：${$.balance}(今过期${$.expiredBalance})元 🧧\n京喜：${$.jxRed}(今过期${$.jxRedExpire.toFixed(2)})元 🧧\n极速：${$.jsRed}(今过期${$.jsRedExpire.toFixed(2)})元 🧧\n京东：${$.jdRed}(今过期${$.jdRedExpire.toFixed(2)})元 🧧`;
           } else {
             console.log(`京东服务器返回空数据`)
           }
