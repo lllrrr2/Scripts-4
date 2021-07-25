@@ -155,8 +155,8 @@ async function energyCollect() {
   const response = await request(function_id);
   // console.log(`收取任务奖励好感度完成:${JSON.stringify(response)}`);
   if (response.resultCode === '0') {
-    message += `【第${response.result.medalNum + 1}块勋章完成进度】${response.result.medalPercent}%，还需收集${response.result.needCollectEnergy}好感\n`;
-    message += `【已获得勋章】${response.result.medalNum}块，还需收集${response.result.needCollectMedalNum}块即可兑换奖品“${$.petInfo.goodsInfo.goodsName}”\n`;
+    message += `【第${response.result.medalNum + 1}块勋章完成进度】${response.result.medalPercent}%，还需${response.result.needCollectEnergy}好感,还需${response.result.needCollectMedalNum}块\n`;
+    //message += `【已获得勋章】${response.result.medalNum}块，还需收集${response.result.needCollectMedalNum}块即可兑换奖品“${$.petInfo.goodsInfo.goodsName}”\n`;
   }
 }
 //再次投食
@@ -303,7 +303,7 @@ async function slaveHelp() {
       console.log(`助力好友结果: ${response.message}`);
     }
   }
-  if (helpPeoples && helpPeoples.length > 0) {
+  if (helpPeoples && helpPeoples.length > 1000) {
     message += `【您助力的好友】${helpPeoples.substr(0, helpPeoples.length - 1)}\n`;
   }
 }
