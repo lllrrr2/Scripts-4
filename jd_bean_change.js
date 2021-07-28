@@ -70,7 +70,7 @@ if ($.isNode()) {
     }
   }
 
-  if ($.isNode() && allMessage) {
+  if ($.isNode() && allMessage && cookiesArr.length<30) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
   }
 })()
