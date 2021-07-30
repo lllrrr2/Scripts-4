@@ -35,7 +35,7 @@ cron "10 * * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd
 
 const $ = new Env('京喜工厂');
 const JD_API_HOST = 'https://m.jingxi.com';
-const helpAu = true; //帮作者助力 免费拿活动
+const helpAu = false; //帮作者助力 免费拿活动
 const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 const randomCount = $.isNode() ? 20 : 5;
@@ -43,10 +43,8 @@ let tuanActiveId = `mNGPTrOPluOSeZcupPI40w==`;
 const jxOpenUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://wqsd.jd.com/pingou/dream_factory/index.html%22%20%7D`;
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 const inviteCodes = [
-  'V5LkjP4WRyjeCKR9VRwcRX0bBuTz7MEK0-E99EJ7u0k=@0WtCMPNq7jekehT6d3AbFw==',
-  "gB99tYLjvPcEFloDgamoBw==@7dluIKQMp0bySgcr8AqFgw==",
-  '-OvElMzqeyeGBWazWYjI1Q==',
-  'GFwo6PntxDHH95ZRzZ5uAg=='
+  '',
+
 ];
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.tuanIds = [];
@@ -132,17 +130,17 @@ if ($.isNode()) {
 async function jdDreamFactory() {
   try {
     await userInfo();
-    await QueryFriendList();//查询今日招工情况以及剩余助力次数
+    //await QueryFriendList();//查询今日招工情况以及剩余助力次数
     // await joinLeaderTuan();//参团
-    await helpFriends();
+    //await helpFriends();
     if (!$.unActive) return
     // await collectElectricity()
     await getUserElectricity();
-    await taskList();
-    await investElectric();
+    //await taskList();
+    //await investElectric();
     await QueryHireReward();//收取招工电力
-    await PickUp();//收取自家的地下零件
-    await stealFriend();
+    //await PickUp();//收取自家的地下零件
+    //await stealFriend();
     await tuanActivity();
     await QueryAllTuan();
     await exchangeProNotify();
@@ -976,7 +974,7 @@ async function joinLeaderTuan() {
       if (!tuanId) continue
       if (!$.canHelp) break;
       console.log(`\n账号${$.UserName} 参加作者lxk0301的团 【${tuanId}】`);
-      await JoinTuan(tuanId);
+      //await JoinTuan(tuanId);
       await $.wait(1000);
     }
   }
@@ -1258,7 +1256,7 @@ async function exchangeProNotify() {
     if (nowTimes < exchangeEndTime) {
       // 一:在兑换超时这一天(2020/12/8 09:20:04)的前3小时内通知（每次运行都通知）
       let flag = true;
-      if ((exchangeEndTime - nowTimes.getTime()) <= 3600000 * 3) {
+      if ((exchangeEndTime - nowTimes.getTime()) <= 3600000 * 10) {
         let expiredTime = parseFloat(((exchangeEndTime - nowTimes.getTime()) / (60*60*1000)).toFixed(1))
         $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n【生产商品】${$.productName}${expiredTime}小时后兑换超时\n【兑换截止时间】${$.exchangeEndTime}\n请速去京喜APP->首页->好物0元造进行兑换`, {'open-url': jxOpenUrl, 'media-url': $.picture})
         // if ($.isNode()) await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName}\n【生产商品】${$.productName}${(exchangeEndTime - nowTimes) / 60*60*1000}分钟后兑换超时\n【兑换截止时间】${$.exchangeEndTime}\n请速去京喜APP->首页->好物0元造进行兑换`, { url: jxOpenUrl })
