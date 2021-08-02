@@ -172,29 +172,8 @@ if (process.env.PUSH_PLUS_USER) {
  * @returns {Promise<unknown>}
  */
 async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By：https://github.com/whyour/qinglong') {
-  try {
-    const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
-    const titleIndex = notifySkipList.findIndex((item) => item === text);
 
-    if (titleIndex !== -1) {
-      console.log(`${text} 在推送黑名单中，已跳过推送`);
-      return;
-    }
 
-    const got = require('got');
-
-    const body = await got('http://localhost:5701/api/users').json();
-    const users = body.data;
-
-    for (const user of users) {
-      if (user.pt_pin && user.nickName && user.remark) {
-        desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
-      }
-    }
-
-  } catch (error) {
-    console.error(error);
-  }
 
   //提供6种通知
   desp += author; //增加作者信息，防止被贩卖等
@@ -737,7 +716,32 @@ function iGotNotify(text, desp, params = {}) {
   });
 }
 
-function pushPlusNotify(text, desp) {
+async function pushPlusNotify(text, desp) {
+  try {
+    const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
+    const titleIndex = notifySkipList.findIndex((item) => item === text);
+
+    if (titleIndex === -1) {
+      console.log(`${text} 在推送白名单中，开启pushplus推送`);
+      return;
+    }
+
+    const got = require('got');
+
+    const body = await got('http://localhost:5701/api/users').json();
+    const users = body.data;
+
+    for (const user of users) {
+      if (user.pt_pin && user.nickName && user.remark) {
+        desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
+      }
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
+
+
   return new Promise((resolve) => {
     if (PUSH_PLUS_TOKEN) {
       desp = desp.replace(/[\n\r]/g, '<br>'); // 默认为html, 不支持plaintext
