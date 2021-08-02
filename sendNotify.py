@@ -54,7 +54,7 @@ if "QQ_SKEY" in os.environ and os.environ["QQ_SKEY"] and "QQ_MODE" in os.environ
 # 获取pushplus+ PUSH_PLUS_TOKEN
 if "PUSH_PLUS_TOKEN" in os.environ:
     if len(os.environ["PUSH_PLUS_TOKEN"]) > 1000000:
-        PUSH_PLUS_TOKEN = os.environ["PUSH_PLUS_TOKEN"]
+        #PUSH_PLUS_TOKEN = os.environ["PUSH_PLUS_TOKEN"]
         # print("已获取并使用Env环境 PUSH_PLUS_TOKEN")
 # 获取企业微信应用推送 QYWX_AM
 if "QYWX_AM" in os.environ:
