@@ -195,9 +195,9 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By：
     pushPlusNotify(text, desp), //pushplus(推送加)
   ]);
   //由于上述两种微信通知需点击进去才能查看到详情，故text(标题内容)携带了账号序号以及昵称信息，方便不点击也可知道是哪个京东哪个活动
-  console.log(`${text} 匹配前`);
+  //console.log(`${text} 匹配前`);
   text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
-  console.log(`${text} 匹配后`);
+  //console.log(`${text} 匹配后`);
   await Promise.all([
     BarkNotify(text, desp, params), //iOS Bark APP
     tgBotNotify(text, desp), //telegram 机器人
@@ -733,11 +733,13 @@ function iGotNotify(text, desp, params = {}) {
 
 async function pushPlusNotify(text, desp) {
   try {
+    text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
+    //console.log(`${text} 有用`);
     const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
     const titleIndex = notifySkipList.findIndex((item) => item === text);
 
     if (titleIndex === -1) {
-      console.log(`${text} 不在推送白名单中，不予pushplus推送`);
+      console.log(`${text} 不在推送白名单中，不予PUSH_PLUS推送`);
       return;
     }
 
