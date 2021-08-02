@@ -52,8 +52,8 @@ if "QQ_SKEY" in os.environ and os.environ["QQ_SKEY"] and "QQ_MODE" in os.environ
     QQ_SKEY = os.environ["QQ_SKEY"]
     QQ_MODE = os.environ["QQ_MODE"]
 # 获取pushplus+ PUSH_PLUS_TOKEN
-if "PUSH_PLUS_TOKEN" in os.environ:
-    if len(os.environ["PUSH_PLUS_TOKEN"]) > 1000000:
+#if "PUSH_PLUS_TOKEN" in os.environ:
+    #if len(os.environ["PUSH_PLUS_TOKEN"]) > 1000000:
         #PUSH_PLUS_TOKEN = os.environ["PUSH_PLUS_TOKEN"]
         # print("已获取并使用Env环境 PUSH_PLUS_TOKEN")
 # 获取企业微信应用推送 QYWX_AM
@@ -78,8 +78,8 @@ if QQ_SKEY and QQ_MODE:
     notify_mode.append('coolpush_bot')
     # print("QQ机器人 推送打开")
 
-if PUSH_PLUS_TOKEN:
-    notify_mode.append('pushplus_bot')
+#if PUSH_PLUS_TOKEN:
+   # notify_mode.append('pushplus_bot')
     # print("微信推送Plus机器人 推送打开")
 if QYWX_AM:
     notify_mode.append('wecom_app')
