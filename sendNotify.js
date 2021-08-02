@@ -172,9 +172,22 @@ if (process.env.PUSH_PLUS_USER) {
  * @returns {Promise<unknown>}
  */
 async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By：https://github.com/whyour/qinglong') {
+  try {
 
+    const got = require('got');
 
+    const body = await got('http://localhost:5701/api/users').json();
+    const users = body.data;
 
+    for (const user of users) {
+      if (user.pt_pin && user.nickName && user.remark) {
+        desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
+      }
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
   //提供6种通知
   desp += author; //增加作者信息，防止被贩卖等
   await Promise.all([
@@ -182,7 +195,9 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By：
     pushPlusNotify(text, desp), //pushplus(推送加)
   ]);
   //由于上述两种微信通知需点击进去才能查看到详情，故text(标题内容)携带了账号序号以及昵称信息，方便不点击也可知道是哪个京东哪个活动
+  console.log(`${text} 匹配前`);
   text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
+  console.log(`${text} 匹配后`);
   await Promise.all([
     BarkNotify(text, desp, params), //iOS Bark APP
     tgBotNotify(text, desp), //telegram 机器人
@@ -722,25 +737,13 @@ async function pushPlusNotify(text, desp) {
     const titleIndex = notifySkipList.findIndex((item) => item === text);
 
     if (titleIndex === -1) {
-      console.log(`${text} 在推送白名单中，开启pushplus推送`);
+      console.log(`${text} 不在推送白名单中，不予pushplus推送`);
       return;
-    }
-
-    const got = require('got');
-
-    const body = await got('http://localhost:5701/api/users').json();
-    const users = body.data;
-
-    for (const user of users) {
-      if (user.pt_pin && user.nickName && user.remark) {
-        desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
-      }
     }
 
   } catch (error) {
     console.error(error);
   }
-
 
   return new Promise((resolve) => {
     if (PUSH_PLUS_TOKEN) {
