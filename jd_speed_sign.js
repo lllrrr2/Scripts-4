@@ -95,7 +95,7 @@ async function jdGlobal() {
     await signInit()
     await sign()
     if ($.canhelp) {
-      console.log(`\n京东账号${$.index}开始助力【zero205】邀请有礼，感谢！\n`);
+      //console.log(`\n京东账号${$.index}开始助力【zero205】邀请有礼，感谢！\n`);
       await invite()
       await invite2()
     }
