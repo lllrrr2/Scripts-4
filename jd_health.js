@@ -72,7 +72,7 @@ async function main() {
     await getTaskDetail(-1)
     await getTaskDetail(16)
     await getTaskDetail(6)
-    for(let i = 0 ; i < 5; ++i){
+    for(let i = 0 ; i < 3; ++i){
       $.canDo = false
       await getTaskDetail()
       if(!$.canDo) break
