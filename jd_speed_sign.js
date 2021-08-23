@@ -128,7 +128,7 @@ async function signInit() {
       "inviterId": [
         "1CRgWazqVItY8aaqpkLH0Gl/O+1OYbYMAaFSLHsfq0U=",
         "T4xQP/egYosCHUTNHkHDqHCzpezw53UOgiGqM1J+FWc=",
-        "dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
+        //"dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
         "d3jdjbeII5GbF1SpVL0LEAqjzzI84LpOZSHFM696Rlw=",
         "10vhQ/yCrMFluS3MNHMWpA=="
       ][Math.floor((Math.random() * 5))]
@@ -691,7 +691,7 @@ function invite2() {
   let inviterId = [
     "1CRgWazqVItY8aaqpkLH0Gl/O+1OYbYMAaFSLHsfq0U=",
     "T4xQP/egYosCHUTNHkHDqHCzpezw53UOgiGqM1J+FWc=",
-    "dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
+    //"dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
     "d3jdjbeII5GbF1SpVL0LEAqjzzI84LpOZSHFM696Rlw=",
     "10vhQ/yCrMFluS3MNHMWpA==",
   ][Math.floor((Math.random() * 5))]
@@ -723,7 +723,7 @@ function invite() {
   let inviterId = [
     "1CRgWazqVItY8aaqpkLH0Gl/O+1OYbYMAaFSLHsfq0U=",
     "T4xQP/egYosCHUTNHkHDqHCzpezw53UOgiGqM1J+FWc=",
-    "dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
+    //"dsEn+XopxVSqrNq0TSRwBBrEwVj/+3qyg7H3FXESIiM=",
     "d3jdjbeII5GbF1SpVL0LEAqjzzI84LpOZSHFM696Rlw=",
     "10vhQ/yCrMFluS3MNHMWpA==",
     "L4/d1QH7e2SBPpYj79RYEQ==",
