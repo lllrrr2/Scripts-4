@@ -22,11 +22,9 @@ const $ = new Env('京东全民开红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 $.redPacketId = [];
-
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -49,7 +47,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     res = await getAuthorShareCode('')
   }
   $.authorMyShareIds = [...(res || [])];
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 7; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -71,31 +69,37 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await showMsg();
     }
   }
-  for (let v = 0; v < cookiesArr.length; v++) {
-    cookie = cookiesArr[v];
-    $.index = v + 1;
+  for (let i = 0; i < cookiesArr.length; i++) {
+    cookie = cookiesArr[i];
+    $.index = i + 1;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
     $.redPacketId = [...new Set($.redPacketId)];
     if (cookiesArr && cookiesArr.length >= 2) {
       console.log(`\n\n自己账号内部互助`);
-      for (let item of $.redPacketId) {
-        console.log(`账号 ${$.index} ${$.UserName} 开始给 ${item} 进行助力`)
-        await jinli_h5assist(item);
-        if (!$.canHelp) {
-          console.log(`次数已用完或活动火爆，跳出助力`)
-          break
+      for (let j = 0; j < $.redPacketId.length && $.canHelp; j++) {
+        console.log(`账号 ${$.index} ${$.UserName} 开始给 ${$.redPacketId[j]} 进行助力`)
+        $.max = false;
+        await jinli_h5assist($.redPacketId[j]);
+        await $.wait(2000)
+        if ($.max) {
+          $.redPacketId.splice(j, 1)
+          j--
+          continue
         }
       }
     }
-    if ($.canHelp) {
+    if ($.canHelp && ($.authorMyShareIds && $.authorMyShareIds.length)) {
       console.log(`\n\n有剩余助力机会则给作者进行助力`);
-      for (let item of $.authorMyShareIds || []) {
-        console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者 ${item} 进行助力`)
-        await jinli_h5assist(item);
-        if (!$.canHelp) {
-          console.log(`次数已用完，跳出助力`)
-          break
+      for (let j = 0; j < $.authorMyShareIds.length && $.canHelp; j++) {
+        console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者 ${$.authorMyShareIds[j]} 进行助力`)
+        $.max = false;
+        await jinli_h5assist($.authorMyShareIds[j]);
+        await $.wait(2000)
+        if ($.max) {
+          $.authorMyShareIds.splice(j, 1)
+          j--
+          continue
         }
       }
     }
@@ -154,7 +158,7 @@ function doLuckDrawEntrance() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data.code === '0' && data['busiCode'] === '0') {
+            if (data.code === '0' && data.busiCode === '0') {
               if (data.result.luckyDrawData.actId) {
                 if (data.result.luckyDrawData.redPacketId) {
                   console.log(`券后9.9抽奖获得【红包】：${data.result.luckyDrawData.quota}元`);
@@ -230,12 +234,12 @@ async function red() {
   $.hasSendNumber = 0;
   $.assistants = 0;
   $.waitOpenTimes = 0;
-  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['result']) {
-    const rewards = $.h5activityIndex['data']['result']['rewards'] || [];
-    $.hasSendNumber = $.h5activityIndex['data']['result']['hasSendNumber'];
-    if ($.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo']) {
-      for (let key of Object.keys($.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'])) {
-        let vo = $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][key]
+  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.result) {
+    const rewards = $.h5activityIndex.data.result.rewards || [];
+    $.hasSendNumber = $.h5activityIndex.data.result.hasSendNumber;
+    if ($.h5activityIndex.data.result.redpacketConfigFillRewardInfo) {
+      for (let key of Object.keys($.h5activityIndex.data.result.redpacketConfigFillRewardInfo)) {
+        let vo = $.h5activityIndex.data.result.redpacketConfigFillRewardInfo[key]
         $.assistants += vo.hasAssistNum
         if (vo.packetStatus === 1) {
           $.waitOpenTimes += 1
@@ -243,14 +247,14 @@ async function red() {
       }
     }
   }
-  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 10002) {
+  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.biz_code === 10002) {
     //可发起拆红包活动
     await h5launch();
-  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 20001) {
+  } else if ($.h5activityIndex && $.h5activityIndex.data && ($.h5activityIndex.data.biz_code === 20001)) {
     //20001:红包活动正在进行，可拆
-    const redPacketId = $.h5activityIndex['data']['result']['redpacketInfo']['id'];
+    const redPacketId = $.h5activityIndex.data.result.redpacketInfo.id;
     if (redPacketId) $.redPacketId.push(redPacketId);
-    console.log(`\n\n当前待拆红包ID:${$.h5activityIndex['data']['result']['redpacketInfo']['id']}，进度：再邀${$.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][$.hasSendNumber]['requireAssistNum'] - $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][$.hasSendNumber]['hasAssistNum']}个好友，开第${$.hasSendNumber + 1}个红包。当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex['data']['result']['remainRedpacketNumber']}个红包待开，已有${$.assistants}好友助力\n\n`)
+    console.log(`\n\n当前待拆红包ID:${$.h5activityIndex.data.result.redpacketInfo.id}，进度：再邀${$.h5activityIndex.data.result.redpacketConfigFillRewardInfo[$.hasSendNumber].requireAssistNum - $.h5activityIndex.data.result.redpacketConfigFillRewardInfo[$.hasSendNumber].hasAssistNum}个好友，开第${$.hasSendNumber + 1}个红包。当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex.data.result.remainRedpacketNumber}个红包待开，已有${$.assistants}好友助力\n\n`)
     console.log(`当前可拆红包个数：${$.waitOpenTimes}`)
     if ($.waitOpenTimes > 0) {
       for (let i = 0; i < $.waitOpenTimes; i++) {
@@ -258,8 +262,8 @@ async function red() {
         await $.wait(500);
       }
     }
-  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 20002) {
-    console.log(`\n${$.h5activityIndex.data['biz_msg']}\n`);
+  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.biz_code === 20002) {
+    console.log(`\n${$.h5activityIndex.data.biz_msg}\n`);
   }
 }
 //获取任务列表API
@@ -408,11 +412,12 @@ function jinli_h5assist(redPacketId) {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
+          if (data && data.data && data.data.biz_code === 0) {
             // status ,0:助力成功，1:不能重复助力，3:助力次数耗尽，8:不能为自己助力
-            console.log(`助力结果：${data['data']['result']['statusDesc']}`)
-            if (data['data']['result']['status'] === 3) $.canHelp = false;
-            if (data['data']['result']['status'] === 9) $.canHelp = false;
+            console.log(`助力结果：${data.data.result.statusDesc}`)
+            if (data.data.result.status === 2) $.max = true;
+            if (data.data.result.status === 3) $.canHelp = false;
+            if (data.data.result.status === 9) $.canHelp = false;
           } else {
             console.log(`助力异常：${JSON.stringify(data)}`);
           }
@@ -436,8 +441,8 @@ function h5receiveRedpacketAll() {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
-            console.log(`拆红包获得：${data['data']['result']['discount']}元`)
+          if (data && data.data && data.data.biz_code === 0) {
+            console.log(`拆红包获得：${data.data.result.discount}元`)
           } else {
             console.log(`领红包失败：${JSON.stringify(data)}`)
           }
@@ -462,12 +467,12 @@ function h5launch() {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
-            if (data['data']['result']['redPacketId']) {
-              console.log(`\n\n发起助力红包 成功：红包ID ${data['data']['result']['redPacketId']}`)
-              $.redPacketId.push(data['data']['result']['redPacketId']);
+          if (data && data.data && data.data.biz_code === 0) {
+            if (data.data.result.redPacketId) {
+              console.log(`\n\n发起助力红包 成功：红包ID ${data.data.result.redPacketId}`)
+              $.redPacketId.push(data.data.result.redPacketId);
             } else {
-              console.log(`\n\n发起助力红包 失败：${data['data']['result']['statusDesc']}`)
+              console.log(`\n\n发起助力红包 失败：${data.data.result.statusDesc}`)
             }
           } else {
             console.log(`发起助力红包 失败：${JSON.stringify(data)}`)
@@ -494,10 +499,10 @@ function h5activityIndex() {
           data = JSON.parse(data);
           $.h5activityIndex = data;
           $.discount = 0;
-          if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['result']) {
-            const rewards = $.h5activityIndex['data']['result']['rewards'] || [];
+          if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.result) {
+            const rewards = $.h5activityIndex.data.result.rewards || [];
             for (let item of rewards) {
-              $.discount += item['packetSum'];
+              $.discount += item.packetSum;
             }
             if ($.discount) $.discount = $.discount.toFixed(2);
           }
@@ -557,7 +562,7 @@ function getCcTaskList(functionId, body, type = '1') {
         "Origin": "https://h5.m.jd.com",
         "Cookie": cookie,
         "Referer": "https://h5.m.jd.com/babelDiy/Zeus/4ZK4ZpvoSreRB92RRo8bpJAQNoTq/index.html",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
       }
     }
     $.post(options, async (err, resp, data) => {
@@ -625,14 +630,13 @@ function taskUrl(functionId, body = {}) {
       "Cookie": cookie,
       "Connection": "keep-alive",
       "Accept": "*/*",
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
       "Referer": "https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html",
       "Content-Length": "56",
       "Accept-Language": "zh-cn"
     }
   }
 }
-
 
 function TotalBean() {
   return new Promise(async resolve => {
@@ -643,7 +647,7 @@ function TotalBean() {
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
         "Accept-Language": "zh-cn",
         "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
         "Accept-Encoding": "gzip, deflate, br"
