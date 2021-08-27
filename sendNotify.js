@@ -735,7 +735,7 @@ function iGotNotify(text, desp, params = {}) {
 async function pushPlusNotify(text, desp) {
   try {
     text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
-    //console.log(`${text} 有用`);
+    console.log(`pushplus推送text为：${text} `);
     const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
     const titleIndex = notifySkipList.findIndex((item) => item === text);
 
