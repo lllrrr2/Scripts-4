@@ -3,20 +3,19 @@
 Last Modified time: 2021-05-19 16:27:18
 活动入口：京东APP首页-领券-锦鲤红包。[活动地址](https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html)
 未实现功能：领3张券功能
-
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ================QuantumultX==================
 [task_local]
 #京东全民开红包
-1 0 * * * jd_redPacket.js, tag=京东全民开红包, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
+1 0 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, tag=京东全民开红包, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
 ===================Loon==============
 [Script]
-cron "1 0 * * *" script-path=jd_redPacket.js, tag=京东全民开红包
+cron "1 0 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, tag=京东全民开红包
 ===============Surge===============
 [Script]
-京东全民开红包 = type=cron,cronexp="1 0 * * *",wake-system=1,timeout=3600,script-path=jd_redPacket.js
+京东全民开红包 = type=cron,cronexp="1 0 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js
 ====================================小火箭=============================
-京东全民开红包 = type=cron,script-path=jd_redPacket.js, cronexpr="1 0 * * *", timeout=3600, enable=true
+京东全民开红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, cronexpr="1 0 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东全民开红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -24,6 +23,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
+let isLoginInfo = {}
 $.redPacketId = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -40,14 +40,14 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  let res = await getAuthorShareCode('')
-  if (!res) {
-    $.http.get({url: ''}).then((resp) => {}).catch((e) => $.log('', e));
+  let res = ""//await getAuthorShareCode('')
+  if (res) {
+    $.http.get({url: ''}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
     await $.wait(1000)
     res = await getAuthorShareCode('')
   }
   $.authorMyShareIds = [...(res || [])];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 6; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -55,6 +55,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       $.isLogin = true;
       $.nickName = '';
       await TotalBean();
+      isLoginInfo[$.UserName] = $.isLogin
       console.log(`\n****开始【京东账号${$.index}】${$.nickName || $.UserName}****\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -75,6 +76,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
     $.redPacketId = [...new Set($.redPacketId)];
+    if (!isLoginInfo[$.UserName]) continue
     if (cookiesArr && cookiesArr.length >= 2) {
       console.log(`\n\n自己账号内部互助`);
       for (let j = 0; j < $.redPacketId.length && $.canHelp; j++) {
@@ -562,7 +564,7 @@ function getCcTaskList(functionId, body, type = '1') {
         "Origin": "https://h5.m.jd.com",
         "Cookie": cookie,
         "Referer": "https://h5.m.jd.com/babelDiy/Zeus/4ZK4ZpvoSreRB92RRo8bpJAQNoTq/index.html",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
       }
     }
     $.post(options, async (err, resp, data) => {
@@ -630,7 +632,7 @@ function taskUrl(functionId, body = {}) {
       "Cookie": cookie,
       "Connection": "keep-alive",
       "Accept": "*/*",
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
       "Referer": "https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html",
       "Content-Length": "56",
       "Accept-Language": "zh-cn"
@@ -647,7 +649,7 @@ function TotalBean() {
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;android;10.0.8;11;7343836616365326-1656137353262393;network/wifi;model/M2012K11AC;addressid/0;aid/748fac5bae175b29;oaid/6b5edfbf03dddfc0;osVer/30;appBuild/89053;partner/cymqj01;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045714 Mobile Safari/537.36"),
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
         "Accept-Language": "zh-cn",
         "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
         "Accept-Encoding": "gzip, deflate, br"
