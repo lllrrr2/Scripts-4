@@ -180,8 +180,8 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By：
     const users = body.data;
 
     for (const user of users) {
-      nin = "Ninja"
-      if (user.pt_pin && user.nickName && user.remark && nin.findIndex((item) => item === text) === -1) {
+      nin = text.indexOf("Ninja")
+      if ((user.pt_pin | user.nickName) && user.remark) {
         desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
       }
     }
