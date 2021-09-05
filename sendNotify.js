@@ -178,7 +178,10 @@ if (process.env.PUSH_PLUS_USER) {
 let ShowRemarkType="1";
 let Notify_CompToGroup2="false";
 let UseGroup2=false;
-
+let Notify_NoCKFalse="false";
+if (process.env.NOTIFY_NOCKFALSE) {
+  Notify_NoCKFalse= process.env.NOTIFY_NOCKFALSE;
+}
 if (process.env.SHOWREMARKTYPE) {
   ShowRemarkType = process.env.SHOWREMARKTYPE;
 }
@@ -205,17 +208,17 @@ let boolneedUpdate=false;
 async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qinglong(ccwav Mod)') {
   console.log(`开始发送通知...`);
   try {
-	if(!desp){ 
-	    console.log(`通知内容为空，不推送`);
-		return;
-	}
-	
-	
+
 	if(text.indexOf("忘了种植") != -1){
 		console.log(`东东农场没有种植，不推送`);
 		return;
 	}		
-	
+	if(Notify_NoCKFalse=="true"){
+		if(text.indexOf("cookie已失效") != -1){
+			console.log(`cookie已失效，不推送`);
+			return;
+		}		
+	}	
 	
 	//检查黑名单屏蔽通知  
     const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
@@ -323,21 +326,22 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qi
 	
 	if(text=="京东到家果园互助码:"){
 	  ShowRemarkType="3";	
-	  var arrTemp = desp.split(",");
-	  var allCode ="";
-	  for (let k = 0; k < arrTemp.length; k++) {
-		  if(arrTemp[k]){			  
-			  if(arrTemp[k].substring(0,1)!="@")
-				  allCode+=arrTemp[k]+",";
+	  if(desp){
+		  var arrTemp = desp.split(",");
+		  var allCode ="";
+		  for (let k = 0; k < arrTemp.length; k++) {
+			  if(arrTemp[k]){			  
+				  if(arrTemp[k].substring(0,1)!="@")
+					  allCode+=arrTemp[k]+",";
+			  }
+		  }
+		  
+		  if(allCode){		  
+			  desp+='\n'+'\n'+"ccwav格式化后的互助码:"+'\n'+allCode;
 		  }
 	  }
-	  
-	  if(allCode){		  
-		  desp+='\n'+'\n'+"ccwav格式化后的互助码:"+'\n'+allCode;
-	  }
-	  console.log(desp);
-		  
 	}
+	
 	
     if (ShowRemarkType!="3" &&titleIndex3 == -1) {
 		console.log("正在处理账号Remark.....");
