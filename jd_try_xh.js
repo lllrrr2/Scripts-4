@@ -301,6 +301,8 @@ function try_feedsList(tabId, page){
                                 args_xh.printLog ? console.log(`检测 tabId:${args_xh.tabId[$.nowTabIdIndex]} 的 第 ${page}/${$.totalPages} 页 第 ${$.nowItem++ + 1} 个商品\n${item.skuTitle}`) : ''
                                 if(parseFloat(item.jdPrice) <= args_xh.jdPrice){
                                     args_xh.printLog ? console.log(`商品被过滤，${item.jdPrice} < ${args_xh.jdPrice} \n`) : ''
+                                } else if(parseFloat(item.trialPrice) >= args_xh.trialPrice && parseFloat(item.jdPrice) <= 48){
+                                    args_xh.printLog ? console.log(`商品被过滤，提供申请的份数小于预设申请的份数 \n`) : ''                                    
                                 } else if(parseFloat(item.supplyNum) < args_xh.minSupplyNum && item.supplyNum !== null){
                                     args_xh.printLog ? console.log(`商品被过滤，提供申请的份数小于预设申请的份数 \n`) : ''
                                 } else if(parseFloat(item.applyNum) > args_xh.applyNumFilter && item.applyNum !== null){
