@@ -177,18 +177,17 @@ if (process.env.PUSH_PLUS_USER) {
  
 let ShowRemarkType="1";
 let Notify_CompToGroup2="false";
-let UseGroup2=false;
 let Notify_NoCKFalse="false";
-if (process.env.NOTIFY_NOCKFALSE) {
-  Notify_NoCKFalse= process.env.NOTIFY_NOCKFALSE;
-}
+let UseGroup2=false;
 if (process.env.SHOWREMARKTYPE) {
   ShowRemarkType = process.env.SHOWREMARKTYPE;
 }
 if (process.env.NOTIFY_COMPTOGROUP2) {
   Notify_CompToGroup2 = process.env.NOTIFY_COMPTOGROUP2;
 }
-
+if (process.env.NOTIFY_NOCKFALSE) {
+  Notify_NoCKFalse= process.env.NOTIFY_NOCKFALSE;
+}
 const {getEnvs} = require('./utils/ql');
  
 const fs = require('fs');
@@ -208,7 +207,7 @@ let boolneedUpdate=false;
 async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qinglong(ccwav Mod)') {
   console.log(`开始发送通知...`);
   try {
-
+	
 	if(text.indexOf("忘了种植") != -1){
 		console.log(`东东农场没有种植，不推送`);
 		return;
@@ -217,8 +216,12 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qi
 		if(text.indexOf("cookie已失效") != -1){
 			console.log(`cookie已失效，不推送`);
 			return;
+		}
+		if(desp.indexOf("重新登录获取") != -1){
+			console.log(`cookie已失效，不推送`);
+			return;
 		}		
-	}	
+	}
 	
 	//检查黑名单屏蔽通知  
     const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
@@ -238,6 +241,12 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qi
 			console.log(`领取信息推送至群组2`);
 			UseGroup2=true;
 		}	
+		if(text=="京喜工厂"){
+			if(desp.indexOf("元造进行兑换") != -1){
+				console.log(`京喜工厂领取信息推送至群组2`);
+				UseGroup2=true;
+			}		
+		}
 	}
 	if (titleIndex2 !== -1) {
 		console.log(`${text} 在群组2推送名单中，初始化群组推送`);
@@ -342,7 +351,6 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qi
 	  }
 	}
 	
-	
     if (ShowRemarkType!="3" &&titleIndex3 == -1) {
 		console.log("正在处理账号Remark.....");
 		//开始读取青龙变量列表
@@ -394,6 +402,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qi
 						$.Remark=$.nickName+"("+$.Remark+")";	
 					}					
 					//加个空格，因为有些通知账号前没有空格很丑-_-!!!
+					text = text.replace(new RegExp(`${$.UserName}|${$.nickName}`, 'gm'), " "+$.Remark);
 					desp = desp.replace(new RegExp(`${$.UserName}|${$.nickName}`, 'gm'), " "+$.Remark);
 					//console.log($.nickName+$.Remark);
 					
@@ -977,7 +986,7 @@ function pushPlusNotify(text, desp) {
   } catch (error) {
     console.error(error);
   }
-  return new Promise((resolve) => {
+    return new Promise((resolve) => {
     if (PUSH_PLUS_TOKEN) {
       desp = desp.replace(/[\n\r]/g, '<br>'); // 默认为html, 不支持plaintext
       const body = {
