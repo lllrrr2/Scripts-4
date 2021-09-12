@@ -204,7 +204,7 @@ if (Fileexists) {
 }
 let tempAddCK={};
 let boolneedUpdate=false;
-async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qinglong(ccwav Mod)') {
+async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By qinglong(acoolbook Mod)') {
   console.log(`开始发送通知...`);
   try {
 	
