@@ -44,6 +44,8 @@ const jxOpenUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 const inviteCodes = [
   '',
+  '',
+ 
 ];
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.tuanIds = [];
@@ -651,6 +653,26 @@ function userInfo() {
                 message += `【生产商品】${$.productName}\n`;
                 message += `【当前等级】${data.user.userIdentity} ${data.user.currentLevel}\n`;
                 message += `【生产进度】${((production.investedElectric / production.needElectric) * 100).toFixed(2)}%\n`;
+
+                // ***************************
+                // 报告运行次数
+                $.get({
+                  url: `https://cdn.nz.lu/api/runTimes?activityId=jxfactory&sharecode=${data.user.encryptPin}`,
+                  headers: {
+                    'Host': 'api.jdsharecode.xyz'
+                  },
+                  timeout: 10000
+                }, (err, resp, data) => {
+                  if (err) {
+                    console.log('上报失败', err)
+                  } else {
+                    if (data === '1' || data === '0') {
+                      console.log('上报成功')
+                    }
+                  }
+                })
+                // ***************************
+
                 if (production.investedElectric >= production.needElectric) {
                   if (production['exchangeStatus'] === 1) $.log(`\n\n可以兑换商品了`)
                   if (production['exchangeStatus'] === 3) {
@@ -1353,11 +1375,11 @@ async function showMsg() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: ``, 'timeout': 10000}, (err, resp, data) => {
+    $.get({url: `https://cdn.nz.lu/api/jxfactory/${randomCount}`, headers: {'Host': 'api.jdsharecode.xyz'}, timeout: 10000}, (err, resp, data) => {
       try {
         if (err) {
-          //console.log(`${JSON.stringify(err)}`)
-          //console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           if (data) {
             console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
