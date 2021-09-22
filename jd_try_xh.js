@@ -130,9 +130,9 @@ let args_xh = {
     whiteListKeywords: process.env.JD_TRY_WHITELISTKEYWORDS && process.env.JD_TRY_WHITELISTKEYWORDS.split('@') || [],
     /*
      * 每多少个账号发送一次通知，默认为4
-     * 可通过环境变量控制 JD_TRY_
+     * 可通过环境变量控制 JD_TRY_SENDNUM
      * */
-    : process.env.JD_TRY_ * 1 || 4,
+    sendNum: process.env.JD_TRY_SENDNUM * 1 || 4,
 }
 //上面很重要，遇到问题请把上面注释看一遍再来问
 !(async() => {
@@ -215,9 +215,9 @@ let args_xh = {
                 }
             }
             if($.isNode()){
-                if($.index % args_xh. === 0 && $.<3){
+                if($.index % args_xh.sendNum === 0 && $.sendNum<3){
                     $.sentNum++;
-                    console.log(`正在进行第 ${$.sentNum} 次发送通知，发送数量：${args_xh.}`)
+                    console.log(`正在进行第 ${$.sentNum} 次发送通知，发送数量：${args_xh.sendNum}`)
                     
                     await $.notify.sendNotify(`${$.name}`, `${notifyMsg}`)
                     notifyMsg = "";
@@ -225,9 +225,9 @@ let args_xh = {
             }
         }
         if($.isNode()){
-            if(($.cookiesArr.length - ($.sentNum * args_xh.)) < args_xh.){
-                console.log(`正在进行最后一次发送通知，发送数量：${($.cookiesArr.length - ($.sentNum * args_xh.))}`)
-                await $.notify.sendNotify(`${$.name}`, `${notifyMsg}`)
+            if(($.cookiesArr.length - ($.sentNum * args_xh.sendNum)) < args_xh.sendNum){
+                console.log(`正在进行最后一次发送通知，发送数量：${($.cookiesArr.length - ($.sentNum * args_xh.sendNum))}`)
+                //await $.notify.sendNotify(`${$.name}`, `${notifyMsg}`)
                 notifyMsg = "";
             }
         }
