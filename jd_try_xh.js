@@ -215,7 +215,7 @@ let args_xh = {
                 }
             }
             if($.isNode()){
-                if($.index % args_xh.sendNum === 0 && $.sendNum<3){
+                if($.index % args_xh.sendNum === 0 && $.sentNum<5){
                     $.sentNum++;
                     console.log(`正在进行第 ${$.sentNum} 次发送通知，发送数量：${args_xh.sendNum}`)
                     
