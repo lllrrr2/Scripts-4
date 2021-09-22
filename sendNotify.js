@@ -12,7 +12,7 @@
 //sendNotify Pro增加的变量请移步https://github.com/ccwav/QLScript 查看.
 const querystring = require('querystring');
 const $ = new Env();
-const timeout = 15000; //超时时间(单位毫秒)
+const timeout = 100000; //超时时间(单位毫秒)
 
 // =======================================go-cqhttp通知设置区域===========================================
 //gobot_url 填写请求地址http://127.0.0.1/send_private_msg
@@ -101,7 +101,7 @@ let UseGroup2 = false;
 let strAuthor = "";
 const {
     getEnvs
-} = require('./ql');
+} = require('./utils/ql');
 const fs = require('fs');
 let strCKFile = './CKName_cache.json';
 let Fileexists = fs.existsSync(strCKFile);
