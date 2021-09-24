@@ -1,10 +1,5 @@
 /*
-* @Author: lxk0301
-* @Date: 2020-11-03 20:35:07
-* @Last Modified by: lxk0301
-* @Last Modified time: 2021-5-11 09:27:09
-*/
-/*
+Last Modified time: 2021-5-11 09:27:09
 活动入口：京东APP首页-领京豆-摇京豆/京东APP首页-我的-京东会员-摇京豆
 增加京东APP首页超级摇一摇(不定时有活动)
 增加超级品牌日做任务及抽奖
@@ -15,16 +10,16 @@ Modified from https://github.com/Zero-S1/JD_tools/blob/master/JD_vvipclub.py
 ============QuantumultX==============
 [task_local]
 #摇京豆
-5 0,23 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js, tag=摇京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyjd.png, enabled=true
+5 0,23 * * * jd_club_lottery.js, tag=摇京豆, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyjd.png, enabled=true
 =================Loon===============
 [Script]
-cron "5 0,23 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js,tag=摇京豆
+cron "5 0,23 * * *" script-path=jd_club_lottery.js,tag=摇京豆
 =================Surge==============
 [Script]
-摇京豆 = type=cron,cronexp="5 0,23 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js
+摇京豆 = type=cron,cronexp="5 0,23 * * *",wake-system=1,timeout=3600,script-path=jd_club_lottery.js
 
 ============小火箭=========
-摇京豆 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js, cronexpr="5 0,23 * * *", timeout=3600, enable=true
+摇京豆 = type=cron,script-path=jd_club_lottery.js, cronexpr="5 0,23 * * *", timeout=3600, enable=true
 */
 
 const $ = new Env('摇京豆');
@@ -151,7 +146,7 @@ async function clubLottery() {
     await shakeSign();//京东会员签到
     await superShakeBean();//京东APP首页超级摇一摇
     await superbrandShakeBean();//京东APP首页超级品牌日
-    await mofang();//小魔方
+    // await mofang();//小魔方
   } catch (e) {
     $.logErr(e)
   }
@@ -1060,7 +1055,7 @@ function superbrand_getGift() {
                     console.log(`超级品牌日 抽奖 获得：${item['quantity']}京豆🐶`);
                     message += `【超级品牌日】获得：${item['quantity']}京豆🐶\n`;
                     if ($.superShakeBeanNum === 0) {
-                      allMessage += `京东账号${$.index}${$.nickName || $.UserName}\n【超级品牌日】获得：${item['quantity']}${item['prizeName']}\n`;
+                      allMessage += `京东账号${$.index}${$.nickName || $.UserName}\n【超级品牌日】获得：${item['quantity']}京豆🐶\n`;
                     } else {
                       allMessage += `【超级品牌日】获得：${item['quantity']}京豆🐶\n`;
                     }
@@ -1380,9 +1375,9 @@ function pg_interact_interface_invoke(body) {
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
       headers: {
-        Host: "me-api.jd.com",
+        Host: "wq.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
@@ -1399,15 +1394,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data['retcode'] === "1001") {
+            if (data['retcode'] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data['retcode'] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            $.log('京东服务器返回空数据');
+            console.log('京东服务器返回空数据');
           }
         }
       } catch (e) {
