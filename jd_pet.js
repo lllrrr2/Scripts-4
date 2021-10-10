@@ -296,10 +296,13 @@ async function slaveHelp() {
   //$.log(`\n因1.6日好友助力功能下线。故暂时屏蔽\n`)
   //return
   let helpPeoples = '';
-  let zl=0;
+  var zl=0;
   for (let code of newShareCodes) {
     console.log(`开始助力京东账号${$.index} - ${$.nickName || $.UserName}的好友: ${code}`);
-    if (zl>15) break;
+    if (zl>13) {
+        zl=0;
+      break;
+    };
     if (!code) continue;
     let response = await request(arguments.callee.name.toString(), {'shareCode': code});
     if (response.code === '0' && response.resultCode === '0') {
@@ -315,7 +318,7 @@ async function slaveHelp() {
         zl += 1
         console.log(`该好友${response.result.masterNickName}已满5人助力，无需您再次助力`);
       } else {
-        zl += 1
+        //zl += 1
         console.log(`助力其他情况：${JSON.stringify(response)}`);
       }
     } else {
