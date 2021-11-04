@@ -77,8 +77,8 @@ async function jdGlobal() {
     await richManIndex()
 
     await wheelsHome()
-    await apTaskList()
-    await wheelsHome()
+    //await apTaskList()
+    //await wheelsHome()
 
     // await signInit()
     // await sign()
@@ -86,8 +86,8 @@ async function jdGlobal() {
     await invite2()
     $.score = 0
     $.total = 0
-    await taskList()
-    await queryJoy()
+    //await taskList()
+    //await queryJoy()
     // await signInit()
     await cash()
     await showMsg()
