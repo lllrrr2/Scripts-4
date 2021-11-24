@@ -744,7 +744,7 @@ install_deps_scripts(){
     GithubProxyUrl="https://ghproxy.com/"
     
     switch_status=(
-      off
+      on
       on
       on
     )
@@ -756,7 +756,7 @@ install_deps_scripts(){
     )
     
     scripts_url=(
-      https://raw.githubusercontent.com/ccwav/QLScript2/main/ql.js
+      https://raw.githubusercontent.com/acoolbook/scripts/main/ql.js
       https://raw.githubusercontent.com/acoolbook/scripts/main/sendNotify.js
       https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
     )
