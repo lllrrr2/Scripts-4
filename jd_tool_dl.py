@@ -19,7 +19,7 @@ def getTool(toolName, a=0):
     if a == 0:
         a += 1
     try:
-        url = 'https://raw.githubusercontent.com/acoolbook/lxkwz/main/' + toolName
+        url = 'https://raw.githubusercontent.com/acoolbook/scripts/main/' + toolName
         response = requests.get(url)
         if response.status_code == 404:
             print(f"[{toolName}] 下载连接有误！")
