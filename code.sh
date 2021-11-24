@@ -79,7 +79,7 @@ rnd2=$[$rnd + 11]
 #echo $rnd2
 #BreakHelpNum=$rnd~$rnd2
 #echo $BreakHelpNum
-BreakHelpType="1"                  ## 屏蔽模式开启 1 
+BreakHelpType=""                  ## 屏蔽模式开启 1 
 BreakHelpNum=$rnd~$rnd2  #"4 9-14 15~18 19_21"  ## 屏蔽账号序号或序号区间
 echo -e "\n## 本次屏蔽被助力账号区间\"$BreakHelpNum\"，共32个账号"
 
