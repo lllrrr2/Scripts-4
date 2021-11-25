@@ -142,7 +142,7 @@ if ($.isNode()) {
 		});
 		return;
 	}
-	for (i = 0; i < cookiesArr.length; i++) {
+	for (i = 0; i < 10; i++) {
 		if (cookiesArr[i]) {
 			cookie = cookiesArr[i];
 			$.pt_pin = (cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
