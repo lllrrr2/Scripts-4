@@ -747,18 +747,22 @@ install_deps_scripts(){
       on
       on
       on
+      on
     )
     
     scripts_name=(
       ql.js
       sendNotify.js
       JD_DailyBonus.js
+      USER_AGENTS.js
     )
     
     scripts_url=(
       https://raw.githubusercontent.com/acoolbook/scripts/main/ql.js
       https://raw.githubusercontent.com/acoolbook/scripts/main/sendNotify.js
       https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
+      https://raw.githubusercontent.com/acoolbook/scripts/main/USER_AGENTS.js
+
     )
     
     test_connect(){
