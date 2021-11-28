@@ -14,7 +14,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const got = require('got');
 const {
     getEnvs, DisableCk, EnableCk,delEnv
-} = require('./utils/ql');
+} = require('./ql');
 const api = got.extend({
     retry: {
         limit: 0
