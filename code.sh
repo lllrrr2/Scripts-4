@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## Build 20211124-002-test
+## Build 20211202-001-test
 
 ## 导入通用变量与函数
 dir_shell=/ql/shell
@@ -41,13 +41,13 @@ CLEANBAK_DAYS="2"
 HelpType="3"
 
 ## 定义前 N 个账号优先助力，N 个以后账号间随机助力。front_num="N"，N 定义值小于账号总数，
-front_num="10"
+front_num="8"
 
 ## 定义指定活动采用指定的互助模板。
 ## 设定值为 DiyHelpType="1" 表示启用功能；不填或填其他内容表示不开启功能。
 ## 如果只是想要控制某个活动以执行某种互助规则，可以参考下面 case 这个命令的例子来控制
 ## 活动名称参见 name_config 定义内容；具体可在本脚本中搜索 name_config=( 获悉
-DiyHelpType=""
+DiyHelpType="0"
 diy_help_rules(){
     case $1 in
         Fruit)
@@ -81,7 +81,7 @@ UpdateType="1"
 ## 定义是否自动安装或修复缺失的依赖，默认为1，表示自动修复；留空或其他数值表示不修复。
 FixDependType="1"
 ## 定义监控修复的依赖名称
-package_name="crypto iconv-lite yargs js-yaml canvas png-js date-fns axios crypto-js ts-md5 tslib @types/node dotenv typescript fs require tslib jsdom js-base64"
+package_name="canvas png-js date-fns axios crypto-js ts-md5 tslib @types/node dotenv got md5 requests typescript fs require tslib jsdom download js-base64 tough-cookie tunnel ws qrcode-terminal jieba prettytable form-data json5 global-agent"
 
 ## 需组合的环境变量列表，env_name需要和var_name一一对应，如何有新活动按照格式添加(不懂勿动)
 env_name=(
@@ -627,8 +627,8 @@ esac
 }
 
 check_jd_cookie(){
-    local test_connect="$(curl -I -s --connect-timeout 5 https://bean.m.jd.com/bean/signIndex.action -w %{http_code} | tail -n1)"
-    local test_jd_cookie="$(curl -s --noproxy "*" "https://bean.m.jd.com/bean/signIndex.action" -H "cookie: $1")"
+    local test_connect="$(curl -I -s --connect-timeout 5 --retry 3 --noproxy "*" https://bean.m.jd.com/bean/signIndex.action -w %{http_code} | tail -n1)"
+    local test_jd_cookie="$(curl -s --connect-timeout 5 --retry 3 --noproxy "*" "https://bean.m.jd.com/bean/signIndex.action" -H "cookie: $1")"
     if [ "$test_connect" -eq "302" ]; then
         [[ "$test_jd_cookie" ]] && echo "(COOKIE 有效)" || echo "(COOKIE 已失效)"
     else
@@ -778,13 +778,13 @@ install_deps_scripts(){
     for ((i = 0; i < ${#scripts_url[*]}; i++)); do
         [[ ${switch_status[i]} = "on" ]] && download_scripts ${scripts_url[i]} ${scripts_name[i]}
         [[ -d $dir_dep && -f $dir_config/${scripts_name[i]} ]] && cp -rf $dir_config/${scripts_name[i]} $dir_dep
-        [[ -f $dir_config/${scripts_name[i]} ]] && find $dir_scripts -type f -name ${scripts_name[i]}|xargs -n 1 cp -rf $dir_config/${scripts_name[i]}
+        [[ -f $dir_config/${scripts_name[i]} ]] && find $dir_scripts ! \( -path "*JDHelloWorld*" -o -path "*ccwav*" \) -type f -name ${scripts_name[i]}|xargs -n 1 cp -rf $dir_config/${scripts_name[i]} && cp -rf $dir_config/${scripts_name[i]} $dir_scripts
     done
 }
 
 ## 执行并写入日志
 kill_proc "code.sh" "grep|$$" >/dev/null 2>&1
-install_deps_scripts &
+#install_deps_scripts &
 [[ $FixDependType = "1" ]] && [[ "$ps_num" -le $proc_num ]] && install_dependencies_all >/dev/null 2>&1 &
 latest_log=$(ls -r $dir_code | head -1)
 latest_log_path="$dir_code/$latest_log"
@@ -797,8 +797,8 @@ update_help
 [[ -f /ql/repo/curtinlv_JD-Script/OpenCard/OpenCardConfig.ini ]] && sed -i "4c JD_COOKIE = '$(echo $JD_COOKIE | sed "s/&/ /g; s/\S*\(pt_key=\S\+;\)\S*\(pt_pin=\S\+;\)\S*/\1\2/g;" | perl -pe "s| |&|g")'" /ql/repo/curtinlv_JD-Script/OpenCard/OpenCardConfig.ini
 
 ## 魔改版 jdCookie.js 复制到 /ql/deps/。仅支持v2.10.8及以上版本的青龙
-[[ -d /ql/deps/ && -f /ql/config/jdCookie.js ]] && cp -rf /ql/config/jdCookie.js /ql/deps/
+[[ -d $dir_dep && -f $dir_config/jdCookie.js ]] && cp -rf $dir_config/jdCookie.js $dir_dep
 ## 魔改版 jdCookie.js 覆盖到 /ql/scripts/及子路径下的所有 jdCookie.js。支持v2.10.8 以下版本的青龙
-[[ -f /ql/config/jdCookie.js ]] && find /ql/scripts -type f -name jdCookie.js|xargs -n 1 cp -rf /ql/config/jdCookie.js
+[[ -f $dir_config/jdCookie.js ]] && find $dir_scripts ! \( -path "*JDHelloWorld*" -o -path "*ccwav*" \) -type f -name jdCookie.js|xargs -n 1 cp -rf $dir_config/jdCookie.js && cp -rf $dir_config/jdCookie.js $dir_scripts
 
 exit
