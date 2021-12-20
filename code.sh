@@ -1,28 +1,35 @@
 #!/usr/bin/env bash
 
-## Build 20211202-001-test
+## Build 20211217-001-test
 
 ## 导入通用变量与函数
-dir_shell=/ql/shell
-. $dir_shell/share.sh
+#dir_shell=/ql/shell
+#. $dir_shell/share.sh
+## 目录
+dir_root=/ql
+dir_config=$dir_root/config
+dir_scripts=$dir_root/scripts
+dir_log=$dir_root/log
+dir_db=$dir_root/db
+dir_code=$dir_log/code
 
 ## 预设的仓库及默认调用仓库设置
 ## 将"repo=$repo1"改成repo=$repo2"或其他，以默认调用其他仓库脚本日志
 ## 也可自行搜索本脚本内的"name_js=("和"name_js_only",将"repo"改成"repo2"或其他，用以自由组合调用仓库的脚本日志
 repo1='panghu999_jd_scripts'                       #预设的 panghu999 仓库
 repo2='JDHelloWorld_jd_scripts'                    #预设的 JDHelloWorld 仓库
-repo3='he1pu_JDHelp'                               #预设的 he1pu 仓库
-repo4='acoolbook_scripts'                          #预设的 shufflewzc 仓库
+repo3='acoolbook_scripts'                               #预设的 he1pu 仓库
+repo4='shufflewzc_faker2'                          #预设的 shufflewzc 仓库
 repo5='Wenmoux_scripts_wen_chinnkarahoi'           #预设的 Wenmoux 仓库，用于读取口袋书店互助码。需提前拉取温某人的仓库或口袋书店脚本并完整运行。
 repo6='Aaron-lv_sync_jd_scripts'                   #预设的 Aaron-lv 仓库
 repo7='smiek2221_scripts'                          #预设的 smiek2221 仓库
-repo=$repo4                                        #默认调用 shufflewzc_faker2 仓库脚本日志
+repo=$repo3                                          #空值，表示遍历所有仓库脚本日志
 
 ## 调试模式开关，默认是0，表示关闭；设置为1，表示开启
 DEBUG="0"
 
 ## 本脚本限制的最大线程数量
-proc_num="8"
+proc_num="10"
 
 ## 备份配置文件开关，默认是1，表示开启；设置为0，表示关闭。备份路径 /ql/config/bak/
 BACKUP="1"
@@ -40,21 +47,24 @@ CLEANBAK_DAYS="2"
 ## 填 4 使用“车头B模式互助模板”，本套脚本内指定前 N 个账号优先助力，N 个以后账号间随机助力(随机部分账号顺序固定)。
 HelpType="3"
 
-## 定义前 N 个账号优先助力，N 个以后账号间随机助力。front_num="N"，N 定义值小于账号总数，
+## 定义前 N 个账号优先助力，N 个以后账号间随机助力。front_num="N"，N 定义值小于账号总数，当HelpType 赋值 3 或 4 时有效
 front_num="8"
 
 ## 定义指定活动采用指定的互助模板。
 ## 设定值为 DiyHelpType="1" 表示启用功能；不填或填其他内容表示不开启功能。
 ## 如果只是想要控制某个活动以执行某种互助规则，可以参考下面 case 这个命令的例子来控制
 ## 活动名称参见 name_config 定义内容；具体可在本脚本中搜索 name_config=( 获悉
-DiyHelpType="0"
+DiyHelpType=""
 diy_help_rules(){
     case $1 in
         Fruit)
-            tmp_helptype=""            # 东东农场使用“全部一致互助模板”，所有账户要助力的码全部一致
+            tmp_helptype="0"            # 东东农场使用“全部一致互助模板”，所有账户要助力的码全部一致
             ;;
-        Pet | JdFactory | Health)
+        DreamFactory | JdFactory)
             tmp_helptype="1"            # 京喜工厂和东东工厂使用“均等机会互助模板”，所有账户获得助力次数一致
+            ;;
+        Jdzz | Joy)
+            tmp_helptype="2"            # 京东赚赚和疯狂的Joy使用“随机顺序互助模板”，本套脚本内账号间随机顺序助力，每次生成的顺序都不一致。
             ;;
         *)
             tmp_helptype=$HelpType      # 其他活动仍按默认互助模板生产互助规则。
@@ -79,9 +89,9 @@ BreakHelpNum="4 9-14 15~18 19_21"  ## 屏蔽账号序号或序号区间
 UpdateType="1"
 
 ## 定义是否自动安装或修复缺失的依赖，默认为1，表示自动修复；留空或其他数值表示不修复。
-FixDependType="1"
+FixDependType=""
 ## 定义监控修复的依赖名称
-package_name="canvas png-js date-fns axios crypto-js ts-md5 tslib @types/node dotenv got md5 requests typescript fs require tslib jsdom download js-base64 tough-cookie tunnel ws qrcode-terminal jieba prettytable form-data json5 global-agent"
+package_name="canvas png-js date-fns axios crypto-js ts-md5 tslib @types/node dotenv got md5 requests typescript fs require jsdom download js-base64 tough-cookie tunnel ws jieba prettytable form-data json5 global-agent"
 
 ## 需组合的环境变量列表，env_name需要和var_name一一对应，如何有新活动按照格式添加(不懂勿动)
 env_name=(
@@ -140,7 +150,7 @@ name_js=(
   "$repo"_jd_health
   "$repo"_jd_carnivalcity
   "$repo"_jd_city
-  "$repo"_jd_moneyTree_heip
+  "$repo"_jd_moneyTree_he?p
   "$repo"_jd_cfd
 )
 
@@ -191,7 +201,7 @@ gen_pt_pin_array() {
   local tmp1 tmp2 i pt_pin_temp
   for i in "${!array[@]}"; do
     pt_pin_temp=$(echo ${array[i]} | perl -pe "{s|.*pt_pin=([^; ]+)(?=;?).*|\1|; s|%|\\\x|g}")
-    remark_name[i]=$(cat $dir_db/env.db | grep ${array[i]} | perl -pe "{s|.*remarks\":\"([^\"]+).*|\1|g}" | tail -1)
+    remark_name[i]=$(cat $dir_db/env.db | grep ${array[i]} | grep remarks | perl -pe "{s|.*remarks\":\"([^\"]+).*|\1|g}" | tail -1)
     [[ $pt_pin_temp == *\\x* ]] && pt_pin[i]=$(printf $pt_pin_temp) || pt_pin[i]=$pt_pin_temp
   done
 }
@@ -211,12 +221,12 @@ export_codes_sub() {
     local envs=$(eval echo "\$JD_COOKIE")
     local array=($(echo $envs | sed 's/&/ /g'))
     local user_sum=${#array[*]}
-    if cd $dir_log/$task_name &>/dev/null && [[ $(ls) ]]; then
+    if cd $dir_log &>/dev/null && [[ $(ls ./*$task_name*/*.log 2> /dev/null | wc -l) -gt 0 ]]; then
         ## 寻找所有互助码以及对应的pt_pin
         i=0
         pt_pin_in_log=()
         code=()
-        pt_pin_and_code=$(ls -r *.log | xargs awk -v var="的$chinese_name好友互助码" 'BEGIN{FS="[（ ）】]+"; OFS="&"} $3~var {print $2,$4}')
+        pt_pin_and_code=$(ls -t ./*$task_name*/*.log | xargs awk -v var="的$chinese_name好友互助码" 'BEGIN{FS="[（ ）】]+"; OFS="&"} $3~var {print $2,$4}')
         for line in $pt_pin_and_code; do
             pt_pin_in_log[i]=$(echo $line | awk -F "&" '{print $1}')
             code[i]=$(echo $line | awk -F "&" '{print $2}')
@@ -405,7 +415,7 @@ export_codes_sub() {
             esac
         fi
     else
-        echo "#【`date +%X`】 未运行过 $task_name.js 脚本，未产生日志"
+        echo "#【`date +%X`】 未运行过 $chinese_name 的脚本，未产生日志"
     fi
 }
 
@@ -446,12 +456,9 @@ export_all_codes() {
     if [ "$ps_num" -gt $proc_num ]; then
         echo -e "\n#【`date +%X`】 检测到 code.sh 的线程过多 ，请稍后再试！"
         exit
-    elif [ -z $repo ]; then
-        echo -e "\n#【`date +%X`】 未检测到兼容的活动脚本日志，无法读取互助码，退出！"
-        exit
     else
-        echo -e "\n#【`date +%X`】 默认调用 $repo 的脚本日志，格式化导出互助码，生成互助规则！"
-        dump_user_info
+        [[ $repo ]] && echo -e "\n#【`date +%X`】 默认查询 $repo 的活动脚本日志，格式化导出互助码，生成互助规则！" || echo -e "\n#【`date +%X`】 遍历活动脚本日志，格式化导出互助码，生成互助规则！"
+        # dump_user_info
         for ((i = 0; i < ${#name_js[*]}; i++)); do
             echo -e "\n## ${name_chinese[i]}："
             export_codes_sub "${name_js[i]}" "${name_config[i]}" "${name_chinese[i]}"
@@ -549,12 +556,12 @@ export_codes_sub_only(){
     local envs=$(eval echo "\$JD_COOKIE")
     local array=($(echo $envs | sed 's/&/ /g'))
     local user_sum=${#array[*]}
-    if cd $dir_log/$task_name &>/dev/null && [[ $(ls) ]]; then
+    if cd $dir_log &>/dev/null && [[ $(ls ./*$task_name*/*.log 2> /dev/null | wc -l) -gt 0 ]]; then
         ## 寻找所有互助码以及对应的pt_pin
         i=0
         pt_pin_in_log=()
         code=()
-        pt_pin_and_code=$(ls -r *.log | xargs awk -v var="的$chinese_name好友互助码" 'BEGIN{FS="[（ ）】]+"; OFS="&"} $3~var {print $2,$4}')
+        pt_pin_and_code=$(ls -t ./*$task_name*/*.log | xargs awk -v var="的$chinese_name好友互助码" 'BEGIN{FS="[（ ）】]+"; OFS="&"} $3~var {print $2,$4}' | xargs awk -v var="的$chinese_name好友互助码" 'BEGIN{FS="[（ ）】]+"; OFS="&"} $3~var {print $2,$4}')
         for line in $pt_pin_and_code; do
             pt_pin_in_log[i]=$(echo $line | awk -F "&" '{print $1}')
             code[i]=$(echo $line | awk -F "&" '{print $2}')
@@ -577,7 +584,9 @@ export_codes_sub_only(){
         else
             echo "## 从日志中未找到任何互助码"
         fi
-fi
+    else
+        echo "#【`date +%X`】 未运行过 $chinese_name 的脚本，未产生日志"
+    fi
 }
 
 #更新互助码和互助规则
@@ -588,8 +597,7 @@ case $UpdateType in
             backup_del
             echo -e "\n#【`date +%X`】 开始更新配置文件的互助码和互助规则"
             for ((i = 0; i < ${#name_config[*]}; i++)); do
-                help_codes "${name_config[i]}" "${name_chinese[i]}"
-                [[ "${name_config[i]}" != "TokenJxnc" ]] && help_rules "${name_config[i]}" "${name_chinese[i]}"
+                { help_codes "${name_config[i]}" "${name_chinese[i]}"; [[ "${name_config[i]}" != "TokenJxnc" ]] && help_rules "${name_config[i]}" "${name_chinese[i]}"; } &
             done
             echo -e "\n#【`date +%X`】 配置文件的互助码和互助规则已完成更新"
         elif [ ! -f $latest_log_path ]; then
@@ -601,7 +609,7 @@ case $UpdateType in
             backup_del
             echo -e "\n#【`date +%X`】 开始更新配置文件的互助码，不更新互助规则"
             for ((i = 0; i < ${#name_config[*]}; i++)); do
-                help_codes "${name_config[i]}" "${name_chinese[i]}"
+                help_codes "${name_config[i]}" "${name_chinese[i]}" &
             done
             echo -e "\n#【`date +%X`】 配置文件的互助码已完成更新"
         elif [ ! -f $latest_log_path ]; then
@@ -613,7 +621,7 @@ case $UpdateType in
             backup_del
             echo -e "\n#【`date +%X`】 开始更新配置文件的互助规则，不更新互助码"
             for ((i = 0; i < ${#name_config[*]}; i++)); do
-                [[ "${name_config[i]}" != "TokenJxnc" ]] && help_rules "${name_config[i]}" "${name_chinese[i]}"
+                [[ "${name_config[i]}" != "TokenJxnc" ]] && help_rules "${name_config[i]}" "${name_chinese[i]}"  &
             done
             echo -e "\n#【`date +%X`】 配置文件的互助规则已完成更新"
         elif [ ! -f $latest_log_path ]; then
@@ -670,79 +678,89 @@ if [[ $CLEANBAK = "1" ]]; then
 fi
 }
 
-install_dependencies_normal(){
-    for i in $@; do
-        case $i in
-            canvas)
-                cd /ql/scripts
-                if [[ "$(echo $(npm ls $i) | grep ERR)" != "" ]]; then
-                    npm uninstall $i
-                fi
-                if [[ "$(npm ls $i)" =~ (empty) ]]; then
-                    apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev && npm i $i --prefix /ql/scripts --build-from-source
-                fi
-                ;;
-            *)
-                if [[ "$(npm ls $i)" =~ $i ]]; then
-                    npm uninstall $i
-                elif [[ "$(echo $(npm ls $i -g) | grep ERR)" != "" ]]; then
-                    npm uninstall $i -g
-                fi
-                if [[ "$(npm ls $i -g)" =~ (empty) ]]; then
-                    [[ $i = "typescript" ]] && npm i $i -g --force || npm i $i -g
-                fi
-                ;;
-        esac
-    done
-}
+#检查 node 依赖状态并修复
+install_node_dependencies_all(){
+    node_dependencies_ori_status(){
+        if [[ -n $(echo $(cnpm ls $1) | grep ERR) ]]; then
+            return 1
+        elif [[ -n $(echo $(cnpm ls $1 -g) | grep ERR) ]]; then
+            return 2
+        elif [[ $(cnpm ls $1) =~ $1 ]]; then
+            return 3
+        elif [[ $(cnpm ls $1 -g) =~ $1 ]]; then
+            return 4
+        fi
+    }
 
-install_dependencies_force(){
-    for i in $@; do
-        case $i in
-            canvas)
-                cd /ql/scripts
-                if [[ "$(npm ls $i)" =~ $i && "$(echo $(npm ls $i) | grep ERR)" != "" ]]; then
-                    npm uninstall $i
-                    rm -rf /ql/scripts/node_modules/$i
-                    rm -rf /usr/local/lib/node_modules/lodash/*
-                fi
-                if [[ "$(npm ls $i)" =~ (empty) ]]; then
-                    apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev && npm i $i --prefix /ql/scripts --build-from-source --force
-                fi
-                ;;
-            *)
-                cd /ql/scripts
-                if [[ "$(npm ls $i)" =~ $i ]]; then
-                    npm uninstall $i
-                    rm -rf /ql/scripts/node_modules/$i
-                    rm -rf /usr/local/lib/node_modules/lodash/*
-                elif [[ "$(npm ls $i -g)" =~ $i && "$(echo $(npm ls $i -g) | grep ERR)" != "" ]]; then
-                    npm uninstall $i -g
-                    rm -rf /ql/scripts/node_modules/$i
-                    rm -rf /usr/local/lib/node_modules/lodash/*
-                fi
-                if [[ "$(npm ls $i -g)" =~ (empty) ]]; then
-                    npm i $i -g --force
-                fi
-                ;;
-        esac
-    done
-}
+    test(){
+        for i in $@; do
+            node_dependencies_ori_status
+            echo -e "$i : $?"
+        done
+    }
 
-install_dependencies_all(){
-    install_dependencies_normal $package_name
+    install_node_dependencie(){
+#        node_dependencies_ori_status $1
+#        if [[ $? = 1 || $? = 2 ]]; then
+#            cnpm uninstall $1
+#        elif [[ $? = 3 ]]; then
+#            cnpm uninstall $1 -g
+#        fi
+#
+#        node_dependencies_ori_status $1
+#        if [[ $? = 4 ]]; then
+#            if [[ $1 = "canvas" ]]; then
+#                apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev && cnpm install $1 -g
+#            else
+#                cnpm install $1 -g --force
+#            fi
+#        fi
+
+        node_dependencies_ori_status $1
+        if [[ $? = 1 ]]; then
+            [[ $1 = "canvas" ]] && { cnpm uninstall $1; rm -rf /ql/scripts/node_modules/canvas; rm -rf /usr/local/lib/node_modules/lodash/canvas; } || cnpm uninstall $1
+        elif [ $? = 2 ]; then
+            [[ $1 = "canvas" ]] && { cnpm uninstall $1 -g; rm -rf /usr/local/lib/node_modules/canvas; } || cnpm uninstall $1 -g
+        fi
+
+        node_dependencies_ori_status $1
+        if [[ $? != 3 && $? != 4 ]]; then
+            [[ $1 = "canvas" ]] && { apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev; cnpm install $1 -g --force; } || cnpm install $1 -g --force
+        fi
+    }
+
+    uninstall_dependencies(){
+        for i in $package_name; do
+            cnpm uninstall $i
+            cnpm uninstall i $i
+            cnpm uninstall $i -g
+            cnpm uninstall i $i -g
+        done
+    }
+
+    check_node_dependencies_setup_status(){
+        for i in $package_name; do
+            cnpm ls $i -g
+        done
+    }
+
+    cnpm install -g cnpm
+    [[ $(npm ls cnpm -g) =~ (empty) ]] && npm install cnpm -g
     for i in $package_name; do
-        {install_dependencies_force $i} &
+        install_node_dependencie $i
     done
+    #cnpm update --force
+    #cnpm i --legacy-peer-deps
+    #cnpm i --package-lock-only
+    #cnpm audit fix
+    #cnpm audit fix --force
 }
 
 kill_proc(){
-ps -ef|grep "$1"|grep -Ev "$2"|awk '{print $1}'|xargs kill -9
+    ps -ef|grep "$1"|grep -Ev "$2"|awk '{print $1}'|xargs kill -9
 }
 
-install_deps_scripts(){
-    GithubProxyUrl="https://ghproxy.com/"
-    
+batch_deps_scripts(){
     switch_status=(
       on
       on
@@ -754,38 +772,44 @@ install_deps_scripts(){
       ql.js
       sendNotify.js
       JD_DailyBonus.js
-      USER_AGENTS.js
-    )
-    
-    scripts_url=(
-      https://raw.githubusercontent.com/acoolbook/scripts/main/ql.js
-      https://raw.githubusercontent.com/acoolbook/scripts/main/sendNotify.js
-      https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
-      https://raw.githubusercontent.com/acoolbook/scripts/main/USER_AGENTS.js
-
+      USER_AGENTS
     )
     
     test_connect(){
-        curl -I -m 2 -s -w "%{http_code}\n" -o /dev/null $1
+        curl -o /dev/null -s -w %{http_code} $1
     }
+
+    get_remote_filesize(){
+        curl -sI $1 | grep -i Content-Length | awk '{print $2}'
+    }
+
+    get_local_filesize(){
+       stat -c %s $1
+    }
+    
+    scripts_source=(
+      https://raw.githubusercontent.com/acoolbook/scripts/main/ql.js
+      https://raw.githubusercontent.com/acoolbook/scripts/main/sendNotify.js
+      https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js
+      https://raw.githubusercontent.com/acoolbook/scripts/main/USER_AGENTS.js
+    )
     
     download_scripts(){
-        tmp_scripts_url=$1
-        [[ "$(test_connect $tmp_scripts_url)" -ne "200" ]] && tmp_scripts_url="$GithubProxyUrl$tmp_scripts_url"
-        curl -L -m 10 -s $tmp_scripts_url -o $dir_config/$2
+        if [[ "$(test_connect $1)" -eq "200" ]]; then
+           curl -C - -s --connect-timeout 5 --retry 3 --noproxy "*" $1 -o $dir_config/tmp_$2
+           [[ $(get_remote_filesize $1) -eq $(get_local_filesize $dir_config/tmp_$2 ) ]] && mv -f $dir_config/tmp_$2 $dir_config/$2 || rm -rf $dir_config/tmp_$2
+        fi
     }
     
-    for ((i = 0; i < ${#scripts_url[*]}; i++)); do
-        [[ ${switch_status[i]} = "on" ]] && download_scripts ${scripts_url[i]} ${scripts_name[i]}
-        [[ -d $dir_dep && -f $dir_config/${scripts_name[i]} ]] && cp -rf $dir_config/${scripts_name[i]} $dir_dep
-        [[ -f $dir_config/${scripts_name[i]} ]] && find $dir_scripts ! \( -path "*JDHelloWorld*" -o -path "*ccwav*" \) -type f -name ${scripts_name[i]}|xargs -n 1 cp -rf $dir_config/${scripts_name[i]} && cp -rf $dir_config/${scripts_name[i]} $dir_scripts
+    for ((i = 0; i < ${#scripts_source[*]}; i++)); do
+        { if [[ ${switch_status[i]} = "on" ]]; then download_scripts ${scripts_source[i]} ${scripts_name[i]}; fi } &
     done
 }
 
 ## 执行并写入日志
 kill_proc "code.sh" "grep|$$" >/dev/null 2>&1
-#install_deps_scripts &
-[[ $FixDependType = "1" ]] && [[ "$ps_num" -le $proc_num ]] && install_dependencies_all >/dev/null 2>&1 &
+batch_deps_scripts &
+[[ $FixDependType = "1" ]] && [[ "$ps_num" -le $proc_num ]] && install_node_dependencies_all >/dev/null 2>&1 &
 latest_log=$(ls -r $dir_code | head -1)
 latest_log_path="$dir_code/$latest_log"
 ps_num="$(ps | grep code.sh | grep -v grep | wc -l)"
@@ -795,10 +819,5 @@ update_help
 
 ## 修改curtinlv入会领豆配置文件的参数
 [[ -f /ql/repo/curtinlv_JD-Script/OpenCard/OpenCardConfig.ini ]] && sed -i "4c JD_COOKIE = '$(echo $JD_COOKIE | sed "s/&/ /g; s/\S*\(pt_key=\S\+;\)\S*\(pt_pin=\S\+;\)\S*/\1\2/g;" | perl -pe "s| |&|g")'" /ql/repo/curtinlv_JD-Script/OpenCard/OpenCardConfig.ini
-
-## 魔改版 jdCookie.js 复制到 /ql/deps/。仅支持v2.10.8及以上版本的青龙
-[[ -d $dir_dep && -f $dir_config/jdCookie.js ]] && cp -rf $dir_config/jdCookie.js $dir_dep
-## 魔改版 jdCookie.js 覆盖到 /ql/scripts/及子路径下的所有 jdCookie.js。支持v2.10.8 以下版本的青龙
-[[ -f $dir_config/jdCookie.js ]] && find $dir_scripts ! \( -path "*JDHelloWorld*" -o -path "*ccwav*" \) -type f -name jdCookie.js|xargs -n 1 cp -rf $dir_config/jdCookie.js && cp -rf $dir_config/jdCookie.js $dir_scripts
 
 exit
