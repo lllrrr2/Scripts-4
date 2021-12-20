@@ -23,10 +23,10 @@ repo4='shufflewzc_faker2'                          #预设的 shufflewzc 仓库
 repo5='Wenmoux_scripts_wen_chinnkarahoi'           #预设的 Wenmoux 仓库，用于读取口袋书店互助码。需提前拉取温某人的仓库或口袋书店脚本并完整运行。
 repo6='Aaron-lv_sync_jd_scripts'                   #预设的 Aaron-lv 仓库
 repo7='smiek2221_scripts'                          #预设的 smiek2221 仓库
-repo=$repo3                                          #空值，表示遍历所有仓库脚本日志
+repo=$repo3                                            #空值，表示遍历所有仓库脚本日志
 
 ## 调试模式开关，默认是0，表示关闭；设置为1，表示开启
-DEBUG="0"
+DEBUG="1"
 
 ## 本脚本限制的最大线程数量
 proc_num="10"
@@ -48,7 +48,7 @@ CLEANBAK_DAYS="2"
 HelpType="3"
 
 ## 定义前 N 个账号优先助力，N 个以后账号间随机助力。front_num="N"，N 定义值小于账号总数，当HelpType 赋值 3 或 4 时有效
-front_num="8"
+front_num="9"
 
 ## 定义指定活动采用指定的互助模板。
 ## 设定值为 DiyHelpType="1" 表示启用功能；不填或填其他内容表示不开启功能。
@@ -772,7 +772,7 @@ batch_deps_scripts(){
       ql.js
       sendNotify.js
       JD_DailyBonus.js
-      USER_AGENTS
+      USER_AGENTS.js
     )
     
     test_connect(){
