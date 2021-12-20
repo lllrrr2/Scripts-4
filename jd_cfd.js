@@ -1,11 +1,28 @@
 /*
-  https://st.jingxi.com/fortune_island/index2.html
+京喜财富岛
+更新时间：2021-9-11
+活动入口：京喜APP-我的-京喜财富岛
 
-  18 0,6-23/2 * * * https://raw.githubusercontent.com/smiek2121/scripts/master/gua_wealth_island.js 财富大陆
+已支持IOS双京东账号,Node.js支持N个京东账号
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+============Quantumultx===============
+[task_local]
+#京喜财富岛
+30 0-23/3 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_cfd.js, tag=京喜财富岛, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
+
+================Loon==============
+[Script]
+cron "30 0-23/3 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_cfd.js,tag=京喜财富岛
+
+===============Surge=================
+京喜财富岛 = type=cron,cronexp="30 0-23/3 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_cfd.js
+
+============小火箭=========
+京喜财富岛 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_cfd.js, cronexpr="30 0-23/3 * * *", timeout=3600, enable=true
 
 */
 
-const $ = new Env('财富大陆');
+const $ = new Env('京喜财富岛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 // const notify = $.isNode() ? require('./sendNotify') : '';
 CryptoScripts()
@@ -20,12 +37,12 @@ function randomString(e) {
 }
 $.InviteList = []
 $.innerInviteList = [];
-const HelpAuthorFlag = false;//是否助力作者SH  true 助力，false 不助力
+const HelpAuthorFlag = true;//是否助力作者SH  true 助力，false 不助力
 
 // 热气球接客 每次运行接客次数
-let serviceNum = 20;// 每次运行接客次数
-if ($.isNode() && process.env.gua_wealth_island_serviceNum) {
-  serviceNum = Number(process.env.gua_wealth_island_serviceNum);
+let serviceNum = 10;// 每次运行接客次数
+if ($.isNode() && process.env.jd_wealth_island_serviceNum) {
+  serviceNum = Number(process.env.jd_wealth_island_serviceNum);
 }
 
 let cookiesArr = [], cookie = '';
@@ -42,8 +59,8 @@ $.appId = 10032;
 
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg('【京东账号一】宠汪汪积分兑换奖品失败', '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
-    return
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    return;
   }
   console.log(`\n
 想要我的财富吗
@@ -113,7 +130,7 @@ async function run() {
     // 导游
     await Guide()
     // 撸珍珠
-    await Pearl()
+    // await Pearl()
     // 牛牛任务
     await ActTask()
     // 日常任务、成就任务
