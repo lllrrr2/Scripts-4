@@ -36,7 +36,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
             $.nickName = '';
             message = '';
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-            msg.push(($.nickName || $.UserName) + ':')
+            //msg.push(($.nickName || $.UserName) + ':')
             first_flag = true
             await sign_all()
         }
@@ -98,6 +98,7 @@ function query() {
                             console.log("没有需要签到的商品,请到京东极速版[签到免单]购买商品");
                             //msg.push("没有需要签到的商品,请到京东极速版[签到免单]购买商品")
                         } else {
+				
                             $.signFreeOrderInfoList = data.data.signFreeOrderInfoList
                             if (first_flag) {
                                 first_flag = false
@@ -134,11 +135,13 @@ function sign(orderId) {
                     data = JSON.parse(data)
                     let msg_temp
                     if (data.success) {
+			    
                         msg_temp = $.productName + ' 签到成功'
                     } else {
                         msg_temp = $.productName + ' ' + (data.errMsg || '未知错误')
                     }
                     console.log(msg_temp)
+			msg.push(($.nickName || $.UserName) + ':')
                     msg.push(msg_temp)
                 }
             } catch (e) {
