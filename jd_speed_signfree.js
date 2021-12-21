@@ -46,7 +46,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
         await notify.sendNotify($.name, msg.join('\n'))
     } else {
         console.error('无消息,推送错误')
-        await notify.sendNotify($.name + '错误!!', "无消息可推送!!")
+        //await notify.sendNotify($.name + '错误!!', "无消息可推送!!")
     }
 })()
 .catch((e) => {
@@ -96,7 +96,7 @@ function query() {
                     if (data.success == true) {
                         if (!data.data.signFreeOrderInfoList) {
                             console.log("没有需要签到的商品,请到京东极速版[签到免单]购买商品");
-                            msg.push("没有需要签到的商品,请到京东极速版[签到免单]购买商品")
+                            //msg.push("没有需要签到的商品,请到京东极速版[签到免单]购买商品")
                         } else {
                             $.signFreeOrderInfoList = data.data.signFreeOrderInfoList
                             if (first_flag) {
