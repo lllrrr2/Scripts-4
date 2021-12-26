@@ -13,7 +13,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const got = require('got');
 const {
-    getEnvs, DisableCk, EnableCk,delEnv
+    getEnvs, DisableCk, EnableCk,delEnv,updateEnv,getstatus
 } = require('./ql');
 const api = got.extend({
     retry: {
@@ -155,6 +155,14 @@ if (process.env.CKNOWARNERROR) {
                     console.log(`我信了，你这账号真的没有别名，通过!\n`);
                 } else {
                     console.log(`成功获取到别名: ${$.nickName},Pass!\n`);
+                    var bz = ''
+                    if (envs[i].remarks===null || envs[i].remarks==='' || !envs[i].hasOwnProperty("remarks") ) {
+                        console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 无备注，开始更新备注!\n`)
+                        bz = 'remark=' + $.nickName + ';'
+                        const updatebody = await updateEnv(envs[i].value,envs[i]._id,bz)
+                        
+                        if (updatebody.code ==200) {console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 备注更新成功!\n`)}
+                    }
                 }
                 if (envs[i].status == 1) {
 
