@@ -29,7 +29,7 @@ repo=$repo3                                            #空值，表示遍历所
 DEBUG="1"
 
 ## 本脚本限制的最大线程数量
-proc_num="10"
+proc_num="12"
 
 ## 备份配置文件开关，默认是1，表示开启；设置为0，表示关闭。备份路径 /ql/config/bak/
 BACKUP="1"
