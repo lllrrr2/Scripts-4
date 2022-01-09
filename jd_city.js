@@ -172,7 +172,8 @@ function getInviteId(i) {
               if (data.data && data['data']['bizCode'] === 0) {
                 if (data.data && data.data.result.userActBaseInfo.inviteId) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
-                  if (i<2 && date.getHours == 0) {
+                  console.log("当前小时:" + date.getHours)
+                  if (i<2 && date.getHours() == 0) {
 
 await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
     }
