@@ -7,6 +7,7 @@
 
  */
 const $ = new Env('城城领现金');
+const date = new Date();
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -58,6 +59,7 @@ $.shareCodesArr = [];
       $.index = i + 1;
       await getUA()
       await getInviteId();
+      if (i<1 && time.hours=0 && $.isNode()) await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
     }
   }
   if(Object.getOwnPropertyNames($.inviteIdCodesArr).length > 0){
