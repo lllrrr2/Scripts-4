@@ -59,7 +59,7 @@ $.shareCodesArr = [];
       $.index = i + 1;
       await getUA()
       await getInviteId();
-      if (i<1 && time.hours=0 && $.isNode()) await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
+      if (i<1 && time.hours<1) await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
     }
   }
   if(Object.getOwnPropertyNames($.inviteIdCodesArr).length > 0){
