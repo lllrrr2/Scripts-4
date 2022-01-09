@@ -7,7 +7,7 @@
 
  */
 const $ = new Env('城城领现金');
-const date = new Date();
+var date = new Date();
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -58,9 +58,9 @@ $.shareCodesArr = [];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
       await getUA()
-      await getInviteId();
+      await getInviteId(i);
       if (i<1 && date.hours<1) {
-await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
+//await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
       }
     }
   }
@@ -156,7 +156,7 @@ function taskPostUrl(functionId,body) {
   }
 }
 
-function getInviteId() {
+function getInviteId(i) {
   let body = {"lbsCity":"16","realLbsCity":"1315","inviteId":'',"headImg":"","userName":"","taskChannel":"1"}
   return new Promise((resolve) => {
     $.post(taskPostUrl("city_getHomeDatav1",body), async (err, resp, data) => {
@@ -172,6 +172,10 @@ function getInviteId() {
               if (data.data && data['data']['bizCode'] === 0) {
                 if (data.data && data.data.result.userActBaseInfo.inviteId) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
+                  if (i<2 && date.hours == 0) {
+
+await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
+    }
                   $.inviteIdCodesArr[$.index - 1] = data.data.result.userActBaseInfo.inviteId
                 }
               } else {
