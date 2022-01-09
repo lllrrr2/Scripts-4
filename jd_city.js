@@ -59,7 +59,7 @@ $.shareCodesArr = [];
       $.index = i + 1;
       await getUA()
       await getInviteId(i);
-      if (i<1 && date.hours<1) {
+      if (i<1 && date.getHours<1) {
 //await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
       }
     }
@@ -172,7 +172,7 @@ function getInviteId(i) {
               if (data.data && data['data']['bizCode'] === 0) {
                 if (data.data && data.data.result.userActBaseInfo.inviteId) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
-                  if (i<2 && date.hours == 0) {
+                  if (i<2 && date.getHours == 0) {
 
 await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
     }
