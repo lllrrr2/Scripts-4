@@ -51,6 +51,7 @@ def load_send():
     if os.path.exists(cur_path + "/sendNotify.py"):
         try:
             from sendNotify import send
+            print("加载通知服务成功~")
         except:
             send=False
             print("加载通知服务失败~")
@@ -86,8 +87,12 @@ def get_remarkinfo():
 def getinfo(ck):
     global sendnotifycation
     global userAwardExpand
+    global targetNum
+    global userAward
     sendnotifycation=False
     userAwardExpand=0
+    targetNum=0
+    userAward=0
     url='https://api.m.jd.com/client.action?functionId=tigernian_pk_getAmountForecast'
     headers={
         'content-type':'application/x-www-form-urlencoded',
@@ -105,13 +110,21 @@ def getinfo(ck):
     response=requests.post(url=url,headers=headers,data=data)
     try:
         printf('可膨胀金额：'+json.loads(response.text)['data']['result']['userAwardExpand']+'\n\n')
-        if(float(json.loads(response.text)['data']['result']['userAwardExpand'])>=10):
+        if(float(json.loads(response.text)['data']['result']['userAwardExpand'])>=1):
             sendnotifycation=True
+            
             userAwardExpand=float(json.loads(response.text)['data']['result']['userAwardExpand'])
+            targetNum=float(json.loads(response.text)['data']['result']['targetNum'])
+            userAward=float(json.loads(response.text)['data']['result']['userAward'])
+            #message1 = message1 + remarkinfos[ptpin] + f'的膨胀红包金额为{userAwardExpand}元,需邀请人数{targetNum}\n\n'
+            #message2 = message2 + ptpin + f'的膨胀红包金额为{userAwardExpand}元,需邀请人数{targetNum}\n\n'
     except:
         printf('获取失败，黑号或者没有参加5人以上的队伍\n\n')
 if __name__ == '__main__':
     remarkinfos={}
+    global message1
+    global message2
+    message1=''
     get_remarkinfo()#获取备注
     try:
         cks = os.environ["JD_COOKIE"].split("&")#获取cookie
@@ -130,8 +143,15 @@ if __name__ == '__main__':
         except:
             printf("--账号:" + urllib.parse.unquote(ptpin) + "--")
         getinfo(ck)
-        if sendnotifycation:
-            try:
-                send(remarkinfos[ptpin]+f'的膨胀红包金额为{userAwardExpand}元','1.进入京东app\n2.点击首页右下角悬浮图标(或搜索栏搜索-全民炸年兽)\n3.点击去组队赚红包右上角即可看到!')
-            except:
-                send(ptpin+f'的膨胀红包金额为{userAwardExpand}元','1.进入京东app\n2.点击首页右下角悬浮图标(或搜索栏搜索-全民炸年兽)\n3.点击去组队赚红包右上角即可看到!')
+        if userAwardExpand >0:
+            message1 += ptpin + f'的原红包金额{userAward}，膨胀金额为{userAwardExpand}元,需邀请人数{targetNum}\n\n'
+        #if sendnotifycation:
+        #    try:
+        #       send(remarkinfos[ptpin]+f'的膨胀红包金额为{userAwardExpand}元','1.进入京东app\n2.点击首页右下角悬浮图标(或搜索栏搜索-全民炸年兽)\n3.点击去组队赚红包右上角即可看到!')
+        #    except:
+        #        send(ptpin+f'的膨胀红包金额为{userAwardExpand}元','1.进入京东app\n2.点击首页右下角悬浮图标(或搜索栏搜索-全民炸年兽)\n3.点击去组队赚红包右上角即可看到!')
+    if message1:
+        try:
+            send("膨胀通知", message1)
+        except:
+            send("膨胀通知", message1)
