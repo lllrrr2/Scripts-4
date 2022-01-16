@@ -30,14 +30,14 @@ Object.keys(jdCookieNode).forEach((item) => {
         try {
             let res = await api({ "apiMapping": "/api/task/support/getShareId" })
             console.log('助力码：', res.data)
-            await wait(1000)
+            //await wait(1000)
             shareCodesSelf.push(res.data)
             res = await api({ "apiMapping": "/api/task/support/list" })
             console.log('收到助力：', res.data.supportedNum)
-            await wait(1000)
+            //await wait(1000)
 
             res = await api({ "apiMapping": "/api/task/brand/tabs" })
-            await wait(1000)
+            //await wait(1000)
             for (let tab of res.data) {
                 let taskGroupId = tab.taskGroupId
                 res = await api({ "taskGroupId": taskGroupId, "apiMapping": "/api/task/brand/getTaskList" })
@@ -52,7 +52,7 @@ Object.keys(jdCookieNode).forEach((item) => {
                             if (res.data.taskType === 'BROWSE_TASK') {
                                 res = await api({ "taskGroupId": taskGroupId, "taskId": res.data.taskId, "taskItemId": res.data.taskItemId, "timestamp": res.data.timeStamp, "apiMapping": "/api/task/brand/getReward" })
                                 console.log('任务完成，积分：', res.data.integral, '，京豆：', res.data.jbean)
-                                await wait(1000)
+                                await wait(500)
                             } else if (res.data.taskType === 'FOLLOW_SHOP_TASK') {
                                 // console.log('任务完成，获得：', res.data.rewardInfoVo?.integral, res.data.rewardInfoVo?.jbean)
                                 console.log(res.data.rewardInfoVo)
@@ -191,7 +191,7 @@ async function api(r_body) {
 
 async function getTaskDetail(taskGroupId) {
     let res = await api({ "taskGroupId": taskGroupId, "apiMapping": "/api/task/brand/getTaskList" })
-    await wait(1000)
+    await wait(500)
     for (let t of res.data) {
         if (t.finishNum !== t.totalNum) {
             return t
