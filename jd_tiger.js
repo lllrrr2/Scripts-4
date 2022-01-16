@@ -66,13 +66,13 @@ Object.keys(jdCookieNode).forEach((item) => {
         }
     }
     let authorCode = []
-    let res = []//await getAuthorShareCode('')
-    if (res) {
+    let res = ["722761d52ad64538a854ebb088e541ae","09e28b18cfc44a7587c741ccf09d6a8d"]
+    if (!res) {
         //res = await getAuthorShareCode('https://gitee.com/KingRan521/JD-Scripts/raw/master/shareCodes/tiger.json')
     }
     if (res) {
         authorCode = res.sort(() => 0.5 - Math.random())
-        const limit = 1
+        const limit = 3
         if (authorCode.length > limit) {
             authorCode = authorCode.splice(0, limit)
         }
@@ -121,7 +121,7 @@ Object.keys(jdCookieNode).forEach((item) => {
             for (let i = 0; i < lotteryNum; i++) {
                 res = await api({ "apiMapping": "/api/lottery/lottery" })
                 console.log('抽奖：', res.data.prizeName)
-                await wait(4000)
+                await wait(3000)
             }
         } catch (e) {
             console.log('黑号？', e)
