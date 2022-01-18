@@ -31,9 +31,7 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let inviteCodes = [
-  '-ryUGtJLNT8_AVacHKKzu_2CdsOpMxQ',
-  '2OnzUK0LbigPY16IW6vR',
-'-ryUXvpZYWESZEaQSN7EpOqrn_FFKerF'
+
 ]
 $.shareCodesArr = [];
 
@@ -44,9 +42,9 @@ $.shareCodesArr = [];
   }
   // await requireConfig();
   if(helpShareFlag+"" == "true"){
-    console.log('脚本优先助力[助力池] 如需开启优先助力[内部账号]，请设置环境变量  JD_CITY_HELPSHARE 为false\n')
+    //console.log('脚本优先助力[助力池] 如需开启优先助力[内部账号]，请设置环境变量  JD_CITY_HELPSHARE 为false\n')
   }else{
-    console.log('脚本优先助力[内部账号] 如需开启优先助力[助力池]，请设置环境变量  JD_CITY_HELPSHARE 为true\n')
+    //console.log('脚本优先助力[内部账号] 如需开启优先助力[助力池]，请设置环境变量  JD_CITY_HELPSHARE 为true\n')
   }
   if (exchangeFlag+"" == "true") {
     console.log(`脚本自动抽奖`)
@@ -57,15 +55,35 @@ $.shareCodesArr = [];
   for (let i = 0; i < cookiesArr.length && true; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
+      $.isLogin = true
+      $.nickName = ''
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
+      await checkCookie()
       await getUA()
       await getInviteId(i);
-      if (i<1 && date.getHours<1) {
-//await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
-      }
+
     }
+      const res = await city_lotteryAward();//抽奖
+        if (res && res > 0) {
+            for (let i = 0; i < new Array(res).fill('').length; i++) {
+              await $.wait(1000)
+              await city_lotteryAward();//抽奖
+            }
+        }
   }
+            const res = await city_lotteryAward();//抽奖
+           if (res && res > 0) {
+            for (let i = 0; i < new Array(res).fill('').length; i++) {
+              await $.wait(1000)
+              await city_lotteryAward();//抽奖
+            }
+          }
+        
+  if (message) {
+      await notify.sendNotify($.name,message)
+  }
+  /*
   if(Object.getOwnPropertyNames($.inviteIdCodesArr).length > 0){
     for (let i = 0; i < cookiesArr.length && true; i++) {
       if (cookiesArr[i]) {
@@ -133,7 +151,7 @@ $.shareCodesArr = [];
       }
       await $.wait(1000)
     }
-  }
+  }*/
 })()
   .catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -171,22 +189,15 @@ function getInviteId(i) {
             // if (inviteId) $.log(`\n助力结果:\n${data}\n`)
             data = JSON.parse(data);
             if (data.code === 0) {
-              if (data.data && data['data']['bizCode'] === 0) {
-                if (data.data && data.data.result.userActBaseInfo.inviteId) {
-                  console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data && data.data.result.userActBaseInfo.inviteId}\n`);
-                  console.log("当前小时:" + date.getHours())
-                  if (i<2 && date.getHours() == 0) {
-
-await notify.sendNotify("@guaguagua_bot", "gua-submit_codes city " + data.data.result.userActBaseInfo.inviteId)
-    }
-                  $.inviteIdCodesArr[$.index - 1] = data.data.result.userActBaseInfo.inviteId
+                data = data.data.result
+                if (data.userActBaseInfo.poolMoney >= data.userActBaseInfo.threshold) {
+                    console.log(`【京东账号${$.index}】${$.nickName || $.UserName}: \n可抽奖次数：${data.lotteryNum || 0}\n余额：${data.userActBaseInfo.poolMoney || 0}\n提现门槛：${data.userActBaseInfo.threshold || 0}\n提现状态：可提现\n\n`)
+                    message+=`【京东账号${$.index}】${$.nickName || $.UserName}: \n可抽奖次数：${data.lotteryNum || 0}\n余额：${data.userActBaseInfo.poolMoney || 0}\n提现门槛：${data.userActBaseInfo.threshold || 0}\n提现状态：可提现，请及时提现\n\n`
+                } else {
+                    console.log(`【京东账号${$.index}】${$.nickName || $.UserName}: 抽奖次数：${data.lotteryNum || 0}\n余额：${data.userActBaseInfo.poolMoney || 0}\n提现门槛：${data.userActBaseInfo.threshold || 0}\n提现状态：不可提现\n\n`)
+                    //message += `【京东账号${$.index}】${$.nickName || $.UserName}: 抽奖次数：${data.lotteryNum || 0}\n余额：${data.userActBaseInfo.poolMoney || 0}\n提现门槛：${data.userActBaseInfo.threshold || 0}\n提现状态：不可提现\n\n`
                 }
-              } else {
-                console.log(`\n\n获取邀请码失败:${data.data.bizMsg}`)
-                if (data.data && !data.data.result.userActBaseInfo.inviteId) {
-                  console.log(`账号已黑，看不到邀请码\n`);
-                }
-              }
+                //console.log(`【京东账号${$.index}】${$.nickName || $.UserName}: 抽奖次数：${data.lotteryNum || 0}\n余额：${data.userActBaseInfo.poolMoney}\n提现门槛：${data.userActBaseInfo.threshold}\n\n`)
             } else {
               console.log(`\n\ncity_getHomeData失败:${JSON.stringify(data)}\n`)
             }
@@ -313,6 +324,49 @@ function getInviteInfo() {
     })
   })
 }
+
+function checkCookie() {
+    const options = {
+        url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+        headers: {
+            "Host": "me-api.jd.com",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "Cookie": cookie,
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1",
+            "Accept-Language": "zh-cn",
+            "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
+            "Accept-Encoding": "gzip, deflate, br",
+        }
+    };
+    return new Promise(resolve => {
+        $.get(options, (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        data = JSON.parse(data);
+                        if (data.retcode === "1001") {
+                            $.isLogin = false; //cookie过期
+                            return;
+                        }
+                        if (data.retcode === "0" && data.data.hasOwnProperty("userInfo")) {
+                            $.nickName = data.data.userInfo.baseInfo.nickname;
+                        }
+                    } else {
+                        $.log('京东返回了空数据');
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
 function city_lotteryAward() {
   let body = {}
   return new Promise((resolve) => {
