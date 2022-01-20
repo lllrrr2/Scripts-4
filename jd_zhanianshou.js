@@ -58,7 +58,7 @@ $.shareCodesArr = [];
             message = '';
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
             //   await shareCodesFormat()
-            $.newShareCodes = ['m2BozEgvAENB7Qjzcb6GDkpQ9qY','m2Bozx8nUkMXvAj2I-vbULKgCdI','mm2Bozx8nUkMXvAj2I-vbULKgCdI','m2BoizBpUEw9jx2tdselFHxJrg','uTUPwU8pC1sNoRU']
+            $.newShareCodes = []//['m2BozEgvAENB7Qjzcb6GDkpQ9qY','m2Bozx8nUkMXvAj2I-vbULKgCdI','mm2Bozx8nUkMXvAj2I-vbULKgCdI','m2BoizBpUEw9jx2tdselFHxJrg','uTUPwU8pC1sNoRU']
             for (let i = 0; i < $.newShareCodes.length && true; ++i) {
                 console.log(`\n开始助力 【${$.newShareCodes[i]}】`)
                 let res = await getInfo($.newShareCodes[i])
