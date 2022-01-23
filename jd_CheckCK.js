@@ -115,7 +115,7 @@ if (process.env.CKNOWARNERROR) {
                 }
                 if (envs[i].status == 0) {
                     if(i < ckjinyong) {
-                    const DisableCkBody = await DisableCk(envs[i]._id);
+                    const DisableCkBody = await DisableCk(envs[i]._id || envs[i].id);
                     if (DisableCkBody.code == 200) {
                         console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,自动禁用成功!\n`);
                         DisableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (已失效,自动禁用成功!)\n`;
@@ -126,7 +126,7 @@ if (process.env.CKNOWARNERROR) {
                         ErrorMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}  已失效,自动禁用失败!\n`;
                     }
                     } else {
-                        const delCkBody = await delEnv(envs[i]._id);
+                        const delCkBody = await delEnv(envs[i]._id || envs[i].id);
                         if (delCkBody.code == 200) {
                              console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}已失效,自动删除成功!\n`);
                              delMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}(已失效,自动删除成功!)\n`;
@@ -138,7 +138,7 @@ if (process.env.CKNOWARNERROR) {
                 } else {
                     console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,已禁用!\n`);
                     if (i >= ckjinyong) {
-                        const delCkBody = await delEnv(envs[i]._id);
+                        const delCkBody = await delEnv(envs[i]._id || envs[i].id);
                         if (delCkBody.code == 200) {
                              console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}已失效,自动删除成功!\n`);
                              delMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}(已失效,自动删除成功!)\n`;
@@ -159,7 +159,7 @@ if (process.env.CKNOWARNERROR) {
                     if (envs[i].remarks===null || envs[i].remarks==='' || !envs[i].hasOwnProperty("remarks") ) {
                         console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 无备注，开始更新备注!\n`)
                         bz = 'remark=' + $.nickName + ';'
-                        const updatebody = await updateEnv(envs[i].value,envs[i]._id,bz)
+                        const updatebody = await updateEnv(envs[i].value,(envs[i]._id || envs[i]).id,bz)
                         
                         if (updatebody.code ==200) {console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 备注更新成功!\n`)}
                     }
@@ -167,7 +167,7 @@ if (process.env.CKNOWARNERROR) {
                 if (envs[i].status == 1) {
 
                     if (CKAutoEnable == "true") {
-                        const EnableCkBody = await EnableCk(envs[i]._id);
+                        const EnableCkBody = await EnableCk(envs[i]._id || envs[i].id);
                         if (EnableCkBody.code == 200) {
                             console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复,自动启用成功!\n`);
                             EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用成功!)\n`;
