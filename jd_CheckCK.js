@@ -13,7 +13,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const got = require('got');
 const {
-    getEnvs, DisableCk, EnableCk,delEnv,updateEnv,getstatus
+    getEnvs, DisableCk, EnableCk,delEnv,updateEnv11,getstatus,updateEnv
 } = require('./ql');
 const api = got.extend({
     retry: {
@@ -159,9 +159,18 @@ if (process.env.CKNOWARNERROR) {
                     if (envs[i].remarks===null || envs[i].remarks==='' || !envs[i].hasOwnProperty("remarks") ) {
                         console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 无备注，开始更新备注!\n`)
                         bz = 'remark=' + $.nickName + ';'
-                        const updatebody = await updateEnv(envs[i].value,(envs[i]._id || envs[i]).id,bz)
+                        if (envs[i]._id) {
+                            //console.log('hh;'+envs[i]._id)
+                            const updatebody = await updateEnv(envs[i].value,envs[i]._id,bz)
+                            if (updatebody.code == 200) {console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 备注更新成功!\n`)}
+                        } else if (envs[i].id) {
+                            //console.log(envs[i].value,envs[i].id,bz)
+                            const updatebody = await updateEnv11(envs[i].value,envs[i].id,bz)
+                            if (updatebody.code == 200) {console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 备注更新成功!\n`)}
+                        }
                         
-                        if (updatebody.code ==200) {console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 备注更新成功!\n`)}
+                        
+                        
                     }
                 }
                 if (envs[i].status == 1) {
