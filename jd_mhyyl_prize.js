@@ -93,7 +93,7 @@ async function  cardlist(ck) {
     var data = mainInfo.cardList
     for (let i = 0; i < data.length; i++) {
         console.log(`${data[i].cardName}：${data[i].count}`)
-        if ($.index < 5 && i === 6 && data[i].count < 1) {
+        if ($.index < 5 && i === 7 && data[i].count < 1) {
             await notify.sendNotify($.name,`账号${$.index}:${usName}的${data[i].cardName}已丢失`)
         } else if ($.index > 6 && (i === 0 || i === 6) && data[i].count > 1) {
             await notify.sendNotify($.name,`账号${$.index}:${usName}获得${data[i].cardName}`)
