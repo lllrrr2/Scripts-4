@@ -29,10 +29,10 @@ let message = '';
     }
     for (let i = 0; i < cookiesArr.length; i++) {
         $.index = i+1;
-        await main(cookiesArr[i]);
-        await $.wait(1000)
+       // await main(cookiesArr[i]);
+       // await $.wait(1000)
         
-        if (process.env.ckjinyong) await cardlist(cookiesArr[i])
+        await cardlist(cookiesArr[i])
     }
     if(message){
         message += `请尽快进APP填写地址`;
