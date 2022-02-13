@@ -76,7 +76,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
   }
 
     console.log(`\n\n内部互助 【赚京豆-瓜分京豆(微信小程序)-瓜分京豆】活动(内部账号互助(需内部cookie数量大于${$.assistNum || 4}个))\n`)
-  for (let i = 0; i < cookiesArr.length; i++) {
+  for (let i = cookiesArr.length - 1; i > -1; i--) {
     $.canHelp = true
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -114,7 +114,14 @@ async function main() {
   try {
      await getUA()
      await requestAlgo()
-     await distributeBeanActivity();
+     let ktsl
+     console.log('当前小时' + new Date().getHours())
+     if (new Date().getHours() > 10) {
+         ktsl = 9
+     } else {
+         ktsl = 5
+     }
+     if ($.index < ktsl) await distributeBeanActivity();
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -133,6 +140,7 @@ async function distributeBeanActivity() {
       if ($.hasOpen) await getUserTuanInfo()
     }
 if ($.tuan && $.tuan.hasOwnProperty('assistedPinEncrypted') && $.assistStatus !== 3) {
+    console.log($.tuan['assistedPinEncrypted'])
       $.tuanList.push($.tuan);
 }
   } catch (e) {
@@ -300,6 +308,7 @@ function getUserTuanInfo() {
                 }
               }
               $.tuanActId = data.data.id;
+              //console.log($.tuanActId)
               $.assistNum = data['data']['assistNum'] || 4;
               $.assistStatus = data['data']['assistStatus'];
               $.canStartNewAssist = data['data']['canStartNewAssist'];
