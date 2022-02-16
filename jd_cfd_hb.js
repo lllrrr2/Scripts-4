@@ -76,7 +76,7 @@ Object.keys(jdCookieNode).forEach((item) => {
     //超过3点不抢1元
     if (oneyuan) {
         console.log('抢1元开始')
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             if (cookiesArr[i]) {
                 $.cookie = cookiesArr[i] + '';
                 $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -168,7 +168,7 @@ async function readExchangeItem() {
         // 2已兑
 
         // let strPrizeNames = ['11元', '1元', '111元', '100元',]
-        let strPrizeNames = ['1元', '0.5元', '0.1元']
+        let strPrizeNames = ['100元','1元', '0.5元', '0.1元']
         await ExchangeState()
         if ($.exchangeData.hongbao) {
             for (let i = 0; i < $.exchangeData.hongbao.length; i++) {
