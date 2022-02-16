@@ -4,7 +4,7 @@
  活动入口：京东APP-东东农场-风车-电竞经理
  活动链接：https://xinruidddj-isv.isvjcloud.com
  [Script]
- cron "11 0-23/5,23 * * *" script-path=jd_EsportsManager.js,tag=东东电竞经理
+ cron "39 0-23/2,23 * * *" script-path=jd_EsportsManager.js,tag=东东电竞经理
  按顺序给第(Math.floor((index - 1) / 6) + 1)个账号助力
  可能有BUG，但不会给别人号助力
  */
@@ -74,8 +74,8 @@ async function main() {
         await getAssist()
         await $.wait(2000)
         for (let i = 0; i < 3; i++) {
-          let randomnum = Math.floor(Math.random() * 7 + 1)
-          if ($.index < 7) randomnum = Math.floor(Math.random() * $.index + 1);
+          let randomnum = Math.floor(Math.random() * 7)
+          if ($.index < 7) randomnum = Math.floor(Math.random() * $.index);
           console.log(`第${$.index}个账号${$.UserName}去助力第${randomnum}个账号。`)
  
           await doAssist(randomnum)
@@ -398,12 +398,12 @@ function get_produce_coins() {
             try {
                 if (!err) {
                     data = JSON.parse(data)
-                    console.log("收币：", data)
+                    console.log("去收币")
                     if (data.status === '0') {
                         let coins = parseInt(data.body.coins)
                         console.log(`收币成功：获得 ${coins}`)
                     } else {
-                        console.log('收币失败！')
+                        console.log('收币失败！', data.message)
                         resolve(500)
                     }
                 }
