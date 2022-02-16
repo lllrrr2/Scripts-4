@@ -77,7 +77,7 @@ async function main() {
           let randomnum = Math.floor(Math.random()*7 + 1)
           console.log(`第${$.index}个账号${$.UserName}去助力第${randomnum}个账号。`)
  
-          await doAssist()
+          await doAssist(randomnum)
         }
         continue
       case '去浏览精彩会场': case '去关注特色频道' :
@@ -130,7 +130,7 @@ function getShareCode(token) {
     })
 }
 
-function doAssist() {
+function doAssist(randomnum) {
     return new Promise(resolve => {
         $.post({
             url: 'https://xinruidddj-isv.isvjcloud.com/api/task/do_assist_task',
