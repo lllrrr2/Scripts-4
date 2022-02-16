@@ -74,7 +74,8 @@ async function main() {
         await getAssist()
         await $.wait(2000)
         for (let i = 0; i < 3; i++) {
-          let randomnum = Math.floor(Math.random()*7 + 1)
+          let randomnum = Math.floor(Math.random() * 7 + 1)
+          if ($.index < 7) randomnum = Math.floor(Math.random() * $.index + 1);
           console.log(`第${$.index}个账号${$.UserName}去助力第${randomnum}个账号。`)
  
           await doAssist(randomnum)
