@@ -4,14 +4,14 @@
 ============Quantumultx===============
 [task_local]
 #极速版抢卷
-57 59 6,9,14,17,20 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_5_2.js, tag=极速版抢卷, enabled=true
+57 59 6,9,14,17,20 * * * https://raw.githubusercontent.com/KingRan/KR/main/jd_5_2.js, tag=极速版抢卷, enabled=true
 ================Loon==============
 [Script]
-cron "57 59 6,9,14,17,20 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_5_2.js,tag=极速版抢卷
+cron "57 59 6,9,14,17,20 * * *" script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_5_2.js,tag=极速版抢卷
 ===============Surge=================
-极速版抢卷 = type=cron,cronexp="58 59 6,9,14,17,20 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_5_2.js
+极速版抢卷 = type=cron,cronexp="57 59 6,9,14,17,20 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_5_2.js
 ============小火箭=========
-极速版抢卷 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_5_2.js, cronexpr="58 59 6,9,14,17,20 * * *", timeout=3600, enable=true
+极速版抢卷 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_5_2.js, cronexpr="58 59 6,9,14,17,20 * * *", timeout=3600, enable=true
  */
 const $ = new Env('抢极速版全品卷5-2');
 const moment = require('moment');
@@ -19,7 +19,7 @@ const moment = require('moment');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
+let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 const randomCount = $.isNode() ? 30 : 5;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
@@ -41,7 +41,7 @@ let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
   }
   await wait(100)
   for (let j = 0; j < randomCount; ++j)
-    for (let i = 0;  i < 1; i++) {
+    for (let i = 0;  i < 7; i++) {
       if (cookiesArr[i]) {
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
