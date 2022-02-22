@@ -73,7 +73,8 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
       await jdFruit();
     }
   }
-  if ($.isNode() && allMessage && $.ctrTemp) {
+  let thetime = new Date()
+  if ($.isNode() && allMessage && $.ctrTemp && (thetime.getDay() === 2 || thetime.getDay() = 5)) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`)
   }
 })()
