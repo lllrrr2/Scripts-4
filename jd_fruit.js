@@ -71,10 +71,12 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
       option = {};
       await shareCodesFormat();
       await jdFruit();
+      await $.wait(31 * 1000)
     }
   }
   let thetime = new Date()
-  if ($.isNode() && allMessage && $.ctrTemp && (thetime.getDay() === 2 || thetime.getDay() = 5)) {
+  console.log('今天是周' + thetime.getDay())
+  if ($.isNode() && allMessage && $.ctrTemp && (thetime.getDay() === 2 || thetime.getDay() === 5)) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`)
   }
 })()
