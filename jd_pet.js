@@ -68,6 +68,7 @@ let randomCount = $.isNode() ? 20 : 5;
       option = {};
       await shareCodesFormat();
       await jdPet();
+      await $.wait(31 * 1000)
     }
   }
   let thetime = new Date()
