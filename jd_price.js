@@ -68,11 +68,12 @@ async function main(id) {
         await $.curl(p2)
         if ($.source.flag) {
             text = `本次保价金额: ${$.source.succAmount}`
+            $.notice(text) 
         } else {
-            text = "本次无保价订单"
+            text = "本次无保价"
         }
         console.log(text)
-        $.notice(text)
+             
         if ($.config[$.runfile]) {
             // 单个商品检测,没什么用处
             console.log("\n手动保价前25个订单")
