@@ -325,7 +325,7 @@ async function all(cookie, jrBody) {
     TotalSubsidy(), //总金贴查询
     TotalMoney() //总现金查询
   ]);
-  await notify(); //通知模块
+  //await notify(); //通知模块
 }
 
 function notify() {
