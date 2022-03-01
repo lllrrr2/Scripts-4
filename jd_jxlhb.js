@@ -79,12 +79,12 @@ $.appId = "e395f"
       continue
     }
     token = await getJxToken()
-    await main();
+    if (i < 8) await main();
   }
   //互助
   console.log(`\n自己京东账号助力码：\n${JSON.stringify($.packetIdArr)}\n`);
   console.log(`\n开始助力：助力逻辑 先自己京东相互助力，如有剩余助力机会，则助力作者\n`)
-  for (let i = 0; i < cookiesArr.length; i++) {
+  for (let i = cookiesArr.length - 1; i > -1; i--) {
     cookie = cookiesArr[i];
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
@@ -98,7 +98,7 @@ $.appId = "e395f"
       }
       $.max = false;
       await enrollFriend($.packetIdArr[j].strUserPin);
-      await $.wait(5000);
+      await $.wait(4000);
       if ($.max) {
         $.packetIdArr.splice(j, 1)
         j--
