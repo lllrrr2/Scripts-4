@@ -54,7 +54,7 @@ if ($.isNode()) {
           await coinDozerBackFlow()
           await getCoinDozerInfo()
           console.log('\n注意助力前五个可助力的账号\n');
-          if (inviteCodes.length >= 5) {
+          if (inviteCodes.length >= 6) {
                break
           }
      }
@@ -62,7 +62,7 @@ if ($.isNode()) {
      cookiesArr.sort(function () {
           return .5 - Math.random();
      });
-     for (let i = 0; i < cookiesArr.length; i++) {
+     for (let i = cookiesArr.length - 1; i > -1; i--) {
           cookie = cookiesArr[i];
           $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
           if (!cookie) continue
@@ -76,7 +76,7 @@ if ($.isNode()) {
                     inviteCodes[j]["ok"] = true
                     continue
                }
-               await $.wait(10000)
+               await $.wait(8000)
                await help(inviteCodes[j]['packetId'])
                if ($.ok) {
                     inviteCodes[j]["ok"] = true
