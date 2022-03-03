@@ -23,15 +23,15 @@ heath_noexchage=''
 
 ##############默认保留10W积分，18W积分才兑换20京豆############
 ###想保留其他分数，ENV设置： export least='xxx'
-least = '480000'
+least = '1500000'
 
 # 20京豆id为4
-id = '4'
+id = '3'
 
 
 #每秒点击兑换次数...适当调整，手机会发烫
 #ENV设置： export dd_thread=30
-dd_thread = '30'
+dd_thread = '20'
 
 UserAgent = ''
 
@@ -314,7 +314,7 @@ class msg(object):
         try:
             url = 'https://raw.githubusercontent.com/acoolbook/scripts/main/sendNotify.py'
             response = requests.get(url)
-            if 'curtinlv' in response.text:
+            if 'acoolbook' in response.text:
                 with open('sendNotify.py', "w+", encoding="utf-8") as f:
                     f.write(response.text)
             else:
@@ -432,14 +432,17 @@ def checkUser(cookies):
             title,exchangePoints,bizMsg,bizCode = jdhealth_getCommodities('jdhealth_getCommodities','{}',headers)
             if user_num == 1:
                 printT("您已设置兑换的商品：【{0}豆】 需要{1}积分".format(title, exchangePoints))
-                print("********** 首先检测您是否有钱呀 ********** ")
-            if str(total_exchangePoints) > least:
+                print(f"********** 首先检测您是否有钱呀 **********")
                 total_exchangePoints = int(total_exchangePoints)
+            if total_exchangePoints > int(least):
+                #total_exchangePoints = int(total_exchangePoints)
+                #print(f'{total_exchangePoints}  {least}')
                 if not str(user_num) in heath_noexchage_list:
                     cookieList.append(i)            #将够钱兑换的账号保存下来给cookieList[]，其余不够钱的账号剔除在外，不执行兑换
                     printT(f"账号{user_num}:【{userName}】积分:{total_exchangePoints}...yes")
             else:
-                total_exchangePoints = int (total_exchangePoints)
+                #total_exchangePoints = int(total_exchangePoints)
+                #print(f'{total_exchangePoints}  {least}')
                 printT(f"账号{user_num}:【{userName}】积分:{total_exchangePoints}...no")
         except Exception as e:
             #printT(f"账号{user_num}:【{userName}】，该用户异常，查不到商品关键词【{Coupon}】，或者cookies已过期")
