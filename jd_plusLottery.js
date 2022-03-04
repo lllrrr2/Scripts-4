@@ -4,11 +4,11 @@
 ============Quantumultx===============
 [task_local]
 #逛PLUS抽京豆
-18 1 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_plusLottery.js, tag=逛PLUS抽京豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+38 0 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_plusLottery.js, tag=逛PLUS抽京豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "18 1 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_plusLottery.js,tag=逛PLUS抽京豆
+cron "18 0 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_plusLottery.js,tag=逛PLUS抽京豆
 
 ===============Surge=================
 逛PLUS抽京豆 = type=cron,cronexp="18 1 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_plusLottery.js
