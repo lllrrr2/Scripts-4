@@ -13,7 +13,7 @@
 
 ================Loon==============
 [Script]
-cron "12 0,19 * * *" script-path=jd_ttpt.js,tag=京东金融天天拼图
+cron "20 0,16 * * *" script-path=jd_ttpt.js,tag=京东金融天天拼图
 
 ===============Surge=================
 京东金融天天拼图 = type=cron,cronexp="20 0,16 * * *",wake-system=1,timeout=20,script-path=jd_ttpt.js
