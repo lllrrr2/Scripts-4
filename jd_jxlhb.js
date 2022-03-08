@@ -160,6 +160,9 @@ function joinActive() {
           if (data.iRet === 0) {
             console.log(`活动开启成功\n`);
           } else {
+            if (data.iRet === 2016){
+                $.openFail=true
+            }
             console.log(`活动开启失败：${data.sErrMsg}\n`);
           }
         }
