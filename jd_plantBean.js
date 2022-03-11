@@ -73,6 +73,7 @@ let num;
       await shareCodesFormat();
       await jdPlantBean();
       await showMsg();
+      await $.wait(10000);
     }
   }
   if ($.isNode() && allMessage) {
@@ -132,14 +133,22 @@ async function jdPlantBean() {
       message += `【上期时间】${roundList[num - 1].dateDesc.replace('上期 ', '')}\n`;
       message += `【上期成长值】${roundList[num - 1].growth}\n`;
       await receiveNutrients();//定时领取营养液
+      await $.wait(2000);
       await doHelp();//助力
+      await $.wait(2000);
       await doTask();//做日常任务
+      await $.wait(2000);
       // await doEgg();
       await stealFriendWater();
+      await $.wait(2000);
       await doCultureBean();
+      await $.wait(1000);
       await doGetReward();
+      await $.wait(1000);
       await showTaskProcess();
+      await $.wait(2000);
       await plantShareSupportList();
+      await $.wait(3000);
     } else {
       console.log(`种豆得豆-初始失败:  ${JSON.stringify($.plantBeanIndexResult)}`);
     }
@@ -560,7 +569,7 @@ async function plantBeanIndex() {
 }
 function readShareCode() {
   return new Promise(async resolve => {
-    $.get({url: `https://cdn.nz.lu/api/bean/${randomCount}`, headers:{'Host':'api.jdsharecode.xyz'}, timeout: 10000}, (err, resp, data) => {
+    $.get({url: ``, headers:{'Host':''}, timeout: 1000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -721,7 +730,7 @@ function TotalBean() {
 }
 function request(function_id, body = {}){
   return new Promise(async resolve => {
-    await $.wait(2000);
+    await $.wait(5000);
     $.post(taskUrl(function_id, body), (err, resp, data) => {
       try {
         if (err) {
