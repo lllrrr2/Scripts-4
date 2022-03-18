@@ -143,7 +143,7 @@ async function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '', pri
           if (printLog) {
             $.log(`等级: ${data.data.level}|金币: ${data.data.joyCoin}`);
             if (data.data.level >= 30 && $.isNode()) {
-              await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看提现\n活动入口：京东极速版APP->我的->汪汪乐园`);
+              //await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看提现\n活动入口：京东极速版APP->我的->汪汪乐园`);
               //$.log(`\n开始解锁新场景...\n`);
               //await doJoyRestart()
             }
