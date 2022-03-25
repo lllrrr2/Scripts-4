@@ -66,7 +66,7 @@ if (tim.getHours()>10) zlzh=8
                 if ($.tuanList && $.tuanList.length) {
                     console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，优先内部账号互助`)
 
-                    for (let j = 0; j < zlzh; j++) {
+                    for (let j = 0; j < $.tuanList.length; j++) {
                         console.log(`账号 ${$.UserName} 开始给 【${$.tuanList[j]['assistedPinEncrypted']}】助力`)
                         $.max = false;
                         await helpFriendTuan($.tuanList[j])
