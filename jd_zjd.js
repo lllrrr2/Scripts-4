@@ -101,7 +101,7 @@ function showMsg() {
 }
 async function main() {
     try {
-        if ($.index<zlzh+2) await distributeBeanActivity();//赚京豆-瓜分京豆
+        if ($.index<zlzh+1) await distributeBeanActivity();//赚京豆-瓜分京豆
         await showMsg();
     } catch (e) {
         $.logErr(e)
