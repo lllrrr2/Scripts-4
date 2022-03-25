@@ -27,8 +27,11 @@ if ($.isNode()) {
 }
 let tim = new Date()
 let zlzh = 4
-if (tim.getHours()>10) zlzh=8
-
+if (tim.getHours()>10) zlzh=9
+let sjzlzh = ''
+if (tim.getHours()>19) {
+    sjzlzh = Math.round(Math.random() * (cookiesArr.length - 12)) + 10
+}
 !(async () => {
 	console.log("\n【温馨提示：脚本来自：赚京豆-玩家国度】\n【请自行选择运行与否，出问题概不负责】")
     if (!cookiesArr[0]) {
@@ -102,6 +105,9 @@ function showMsg() {
 async function main() {
     try {
         if ($.index<zlzh+1) await distributeBeanActivity();//赚京豆-瓜分京豆
+        if (tim.getHours() > 19 && sjzlzh) {
+            if ($.index == sjzlzh || $.index == sjzlzh + 1 || $.index == sjzlzh + 2 || $.index == sjzlzh + 3) await distributeBeanActivity()
+        }
         await showMsg();
     } catch (e) {
         $.logErr(e)
