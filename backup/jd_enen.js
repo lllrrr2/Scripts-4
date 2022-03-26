@@ -5,16 +5,16 @@
  ==========================Quantumultx=========================
  [task_local]
  #嗯
- 18 8 13 7 * jd_logout.js, tag=嗯, img-url=https://raw.githubusercontent.com/JDHelloWorld/jd_scripts/main/icon/jd_logout.png, enabled=true
+ * * 1 6 * jd_logout.js, tag=嗯, img-url=https://raw.githubusercontent.com/JDHelloWorld/jd_scripts/main/icon/jd_logout.png, enabled=true
  =========================Loon=============================
  [Script]
- cron "* * 13 7 *" script-path=jd_logout.js,tag=嗯
+ cron "* * 1 6 *" script-path=jd_logout.js,tag=嗯
 
  =========================Surge============================
- 嗯 = type=cron,cronexp="* * 13 7 *",wake-system=1,timeout=3600,script-path=jd_logout.js
+ 嗯 = type=cron,cronexp="* * * * *",wake-system=1,timeout=3600,script-path=jd_logout.js
 
  =========================小火箭===========================
- 嗯 = type=cron,script-path=jd_logout.js, cronexpr="* * 13 7 *", timeout=3600, enable=true
+ 嗯 = type=cron,script-path=jd_logout.js, cronexpr="* * * * *", timeout=3600, enable=true
 
  */
 
