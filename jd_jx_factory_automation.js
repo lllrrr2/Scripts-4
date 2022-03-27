@@ -57,7 +57,7 @@ $.logic = async function () {
             $.putMsg(`${data.name}已经开始生产`)
         }
     } else {
-        $.putMsg(`没找到你要生产的 ${commodityName}`)
+        //$.putMsg(`没找到你要生产的 ${commodityName}`)
     }
 };
 
