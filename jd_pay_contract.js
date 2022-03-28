@@ -104,7 +104,7 @@ const PAY_CONTRACT = new class {
     process.env = {}
   }
   if (!process.env['JD_PAY_CONTRACT']) {
-    process.env['JD_PAY_CONTRACT'] = false
+    process.env['JD_PAY_CONTRACT'] = true
   }
   if (process.env['JD_PAY_CONTRACT'].toString().toLocaleLowerCase() !== 'true') {
     console.log(`当前未启用检查并停用免密支付\n如需启用请添加 JD_PAY_CONTRACT=true\n`)
