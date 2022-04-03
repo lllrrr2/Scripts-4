@@ -73,7 +73,7 @@ if (!jdPandaToken) {
         }
         continue
       }
-      await jdCash()
+      if (i < 15)await jdCash()
     }
   }
   if (allMessage) {
