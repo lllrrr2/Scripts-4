@@ -43,7 +43,7 @@ if ($.isNode()) {
 }
 
 //最大化硬币收益模式
-$.JOY_COIN_MAXIMIZE = process.env.JOY_COIN_MAXIMIZE === '1'
+$.JOY_COIN_MAXIMIZE = 1
 $.log(`最大化收益模式: 已${$.JOY_COIN_MAXIMIZE ? `默认开启` : `关闭`}  `)
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
@@ -144,8 +144,8 @@ async function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '', pri
             $.log(`等级: ${data.data.level}|金币: ${data.data.joyCoin}`);
             if (data.data.level >= 30 && $.isNode()) {
               await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName || $.UserName}\n当前等级: ${data.data.level}\n已达到单次最高等级奖励\n请前往京东极速版APP查看使用优惠券\n活动入口：京东极速版APP->我的->汪汪乐园`);
-              //$.log(`\n开始解锁新场景...\n`);
-              //await doJoyRestart()
+              $.log(`\n开始解锁新场景...\n`);
+              await doJoyRestart()
             }
           }
           $.joyBaseInfo = data.data
