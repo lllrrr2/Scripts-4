@@ -447,7 +447,7 @@ async function showMsg() {
 		$.msg($.name, ``, allmessage, {
 			"open-url": 'https://try.m.jd.com/user'
 		})
-		if($.isNode()){
+		if(allmessage && $.isNode()){
 			await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickname}`, allmessage)
 		}
 	} else {
