@@ -420,7 +420,7 @@ async function getSuccessList() {
 						$.successList.forEach(function(v){ $.successListb.push(v.trialName);})	//试用名称
 						$.successListc=$.successListb.map((e,i)=>{return [e,$.successListaa[i]]})
                                                                                       console.log(`京东账号${$.index} ${$.nickname || $.UserName}\n🎉  ${$.successList.length}个商品待领取🤩\n🎉为：${$.successListc }`)
-						allmessage += `京东账号${$.index} ${$.nickname || $.UserName}\n🎉  ${$.successList.length}个商品待领取🤩\n🎉为：${$.successListc }${$.index !== cookiesArr.length ? '\n\n' : '\n\n'}`
+						if ($.successList.length > 0) allmessage += `京东账号${$.index} ${$.nickname || $.UserName}\n🎉  ${$.successList.length}个商品待领取🤩\n🎉为：${$.successListc }${$.index !== cookiesArr.length ? '\n\n' : '\n\n'}`
 						//$.successListb = data.map(function (item) {
 						//	return item.trialName
 						//})
