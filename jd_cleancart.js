@@ -35,7 +35,7 @@ pin3@&@不清空👉该pin不清空
 防止没指定的账号购物车全清空
 
 */
-let jdSignUrl = 'https://api.jds.codes/jd/sign'
+let jdSignUrl = 'https://api.zhezhe.cf/jd/sign'
 let jdPandaToken = ''
 let cleancartRun = 'false'
 let cleancartProducts = ''
@@ -97,7 +97,7 @@ for (let i in productsArr) {
     return
   }
   if(jdSignUrl.indexOf("://jd.smiek.tk/") > -1) {
-    return
+    //return
   }
   $.out = false
   for (let i = 0; i < cookiesArr.length; i++) {
