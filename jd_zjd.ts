@@ -22,12 +22,19 @@ interface Tuan {
 
 !(async () => {
   let cookiesArr: string[] = await requireConfig(false)
-  for (let [index, value] of cookiesArr.entries()) {
-	if(index < 4){
+  //console.log(cookiesArr)
+  for (var index = 0; index < cookiesArr.length;index++) {
+    var kts
+    if (new Date().getHours() < 9) {
+        kts = 4
+    } else {
+        kts = 8
+    }
+	if(index < kts){
 	try {
       await zjdInit()
-      cookie = value
-
+      cookie = cookiesArr[index]
+      //console.log(`qqq`)
       UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
       console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
 
@@ -84,10 +91,12 @@ interface Tuan {
 	}
   }
 
-  console.log('内部助力：', shareCodeSelf)
-  for (let [index, value] of cookiesArr.entries()) {
+  console.log('内部助力a：', shareCodeSelf)
+  
+  for (var index = cookiesArr.length - 1; index > 0; index--) {
+       console.log('内部助力b：', shareCodeSelf)
 	try {
-	cookie = value
+	cookie = cookiesArr[index]
     UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
     console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
 	shareCode = Array.from(new Set([...shareCodeSelf]))
