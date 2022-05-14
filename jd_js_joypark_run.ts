@@ -20,8 +20,8 @@ let assets: number = 0, captainId: string = '', h5stTool: H5ST = null
   let account: { pt_pin: string, joy_park_run: number }[] = []
 
 
-  for (let [index, value] of cookiesArr.entries()) {
-    cookie = value
+  for (var index = 0; index < cookiesArr.length;index++) {
+    cookie = cookiesArr[index]
     UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
     console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
 
