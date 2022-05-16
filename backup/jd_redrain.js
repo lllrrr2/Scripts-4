@@ -30,7 +30,7 @@ if ($.isNode()) {
   if (process.env.jd_redrain_activityId) jd_redrain_activityId = process.env.jd_redrain_activityId
   if (process.env.jd_redrain_url) jd_redrain_url = process.env.jd_redrain_url
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
-  };
+  }; 
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
