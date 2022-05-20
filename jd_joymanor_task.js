@@ -165,7 +165,7 @@ message = ""
 //
 async function help() {
   $.log("\n======汪汪乐园开始内部互助======\n")
-  for (let i = 0; i < cookiesArr.length; i++) {
+  for (let i = cookiesArr.length -1; i > 0 ; i--) {
     cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
