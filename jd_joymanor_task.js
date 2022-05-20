@@ -49,6 +49,7 @@ message = ""
     });
     return;
   }
+  await help()
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
@@ -154,6 +155,15 @@ message = ""
     }
   }
 
+})()
+  .catch((e) => $.logErr(e))
+  .finally(() => $.done())
+
+//获取活动信息
+
+
+//
+async function help() {
   $.log("\n======汪汪乐园开始内部互助======\n")
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
@@ -173,9 +183,14 @@ message = ""
         continue
       }
       $.newinvitePinTaskList = [...($.invitePinTaskList || []), ...($.invitePin || [])]
-      for (const invitePinTaskListKey of $.newinvitePinTaskList) {
-        $.log(`【京东账号${$.index}】${$.nickName || $.UserName} 助力 ${invitePinTaskListKey}`)
-        let resp = await getJoyBaseInfo($.yq_taskid, 1, invitePinTaskListKey);
+      let bodyArr =[`functionId=joyBaseInfo&body={"taskId":"610","inviteType":"1","inviterPin":"QBvMTcXPbkwIlv837Jda2RG9Q_X5Q69q6vmghb6ZAm8","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&t=1653029574215&appid=activities_platform&h5st=20220520145254224%3B4245692174020873%3B4abce%3Btk02wd0531cff18nQDrMYM2ddQnAvQ4MztaqgzcudwlRi9GHXOiKvnaCgLQ9ygwUC%2BAgKWY0Ad28PeIRveLkPMPMttao%3Bef13665c5665f0db4a51d1eeb42474e80b4fd33082d332b8a5109b4b6484be88%3B3.0%3B1653029574224&cthr=1`,
+      `functionId=joyBaseInfo&body={"taskId":"610","inviteType":"1","inviterPin":"PGeoKpZ2TtGT4CniP1xtXkLzgydkwqsFE40RI1BhzBw","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&t=1653029733755&appid=activities_platform&h5st=20220520145533762%3B4245692174020873%3B4abce%3Btk02wd0531cff18nQDrMYM2ddQnAvQ4MztaqgzcudwlRi9GHXOiKvnaCgLQ9ygwUC%2BAgKWY0Ad28PeIRveLkPMPMttao%3B177bf26cd7b4b9c1f47a02419dfbfc9eccd48c919b937822a8b547624e2751e7%3B3.0%3B1653029733762&cthr=1`,
+      `functionId=joyBaseInfo&body={"taskId":"610","inviteType":"1","inviterPin":"d8qYBiA2CcvYPoRe2MVDwYphqXv_Bbx5LnHIKqL_dZY","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&t=1653029871402&appid=activities_platform&h5st=20220520145751410%3B4245692174020873%3B4abce%3Btk02wd0531cff18nQDrMYM2ddQnAvQ4MztaqgzcudwlRi9GHXOiKvnaCgLQ9ygwUC%2BAgKWY0Ad28PeIRveLkPMPMttao%3B843db7ee939c1527f7b0805810af65f115f22d1e9caad4b7af6b6d9426cffb89%3B3.0%3B1653029871410&cthr=1`,
+      `functionId=joyBaseInfo&body={"taskId":"610","inviteType":"1","inviterPin":"cpIEMMjYbI0oTSXU8Nf-UQ","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&t=1653029959711&appid=activities_platform&h5st=20220520145919721%3B4245692174020873%3B4abce%3Btk02wd0531cff18nQDrMYM2ddQnAvQ4MztaqgzcudwlRi9GHXOiKvnaCgLQ9ygwUC%2BAgKWY0Ad28PeIRveLkPMPMttao%3Ba28a7a13c52c9fa8a488c322cb29312e211a4076c0ee315af43e1c6c36a86ed8%3B3.0%3B1653029959721&cthr=1`]
+      for (var ii = 0; ii < bodyArr.length; ii++) {
+        await $.wait(1500)
+        $.log(`【京东账号${$.index}】${$.nickName || $.UserName} 助力 ${bodyArr[ii].match(/inviterPin":"(.+?)"/)[0]}`)
+        let resp = await getJoyBaseInfo2(bodyArr[ii]);
         if (resp.success) {
           if (resp.data.helpState === 1) {
             $.log("助力成功！");
@@ -196,16 +211,12 @@ message = ""
       }
     }
   }
-})()
-  .catch((e) => $.logErr(e))
-  .finally(() => $.done())
-//获取活动信息
-
+}
 //任务列表
 function getTaskList() {
   //await $.wait(20)
   return new Promise(resolve => {
-    $.post(taskPostClientActionUrl(`body={"linkId":"Vr5e5qokLNCRxNmi4VTW4Q"}&appid=activities_platform`, `apTaskList`), async (err, resp, data) => {
+    $.post(taskPostClientActionUrl(`body={"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`, `apTaskList`), async (err, resp, data) => {
       $.log('=== 任务列表 start ===')
       try {
         if (err) {
@@ -237,8 +248,21 @@ function getTaskList() {
  */
 function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '') {
     //await $.wait(20)
+    let url = {
+        url: `https://api.m.jd.com/`,
+        body: `functionId=joyBaseInfo&body={"taskId":"${taskId}","inviteType":"${inviteType}","inviterPin":"${inviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&t=1653024554510&appid=activities_platform&h5st=20220520132914517%3B4245692174020873%3B4abce%3Btk02wd0531cff18nQDrMYM2ddQnAvQ4MztaqgzcudwlRi9GHXOiKvnaCgLQ9ygwUC%2BAgKWY0Ad28PeIRveLkPMPMttao%3B81bdb894c0ef93293319d96e3a94d435c7e6b96520e55defbdfc0aa79f8caffa%3B3.0%3B1653024554517&cthr=1`,
+        headers: {
+            'User-Agent': $.UA,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Host': 'api.m.jd.com',
+            'Origin': 'https://joypark.jd.com',
+            'Referer': 'https://joypark.jd.com/',
+            'Cookie': cookie,
+        }
+    }
+    //console.log(url.body)
     return new Promise(resolve => {
-        $.post(taskPostClientActionUrl(`body={"taskId":"${taskId}","inviteType":"${inviteType}","inviterPin":"${inviterPin}","linkId":"Vr5e5qokLNCRxNmi4VTW4Q"}&appid=activities_platform&t=${Date.now()}&client=activities_platform&h5st=20220509105406529%3B9112909836479988%3B4abce%3Btk02w774b1bbd18nGS0GgF00CXWFenyTPHs%2Bp26eYf9ZmlZVf%2BvEe3Gf0Zd80IGUasS%2FWd%2FoZlsJdtXKnoeXyciIpR1U%3B367214d88c1dbeda0cee50036420f60572854e94d718de89adee91dc59e42668%3B3.0%3B1652064846529&cthr=1`, `joyBaseInfo`), async (err, resp, data) => {
+        $.post(url, async (err, resp, data) => {
             try {
                 if (err) {
                     console.log(`${JSON.stringify(err)}`)
@@ -247,6 +271,7 @@ function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '') {
                     data = JSON.parse(data);
                     $.joyBaseInfo = data.data
 					//console.log(`${JSON.stringify(data)}`)
+                    if (data.success != true) console.log('h5st可能失效',`${JSON.stringify(data)}`)
                 }
             } catch (e) {
                 $.logErr(e, resp)
@@ -259,11 +284,48 @@ function getJoyBaseInfo(taskId = '', inviteType = '', inviterPin = '') {
     })
 }
 
+function getJoyBaseInfo2(body) {
+    //await $.wait(20)
+    let url = {
+        url: `https://api.m.jd.com/`,
+        body: body,
+        headers: {
+            'User-Agent': $.UA,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Host': 'api.m.jd.com',
+            'Origin': 'https://joypark.jd.com',
+            'Referer': 'https://joypark.jd.com/',
+            'Cookie': cookie,
+        }
+    }
+    //console.log(url.body)
+    return new Promise(resolve => {
+        $.post(url, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    data = JSON.parse(data);
+                    $.joyBaseInfo = data.data
+					//console.log(`${JSON.stringify(data)}`)
+                    if (data.success != true) console.log('h5st可能失效',`${JSON.stringify(data)}`)
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                //$.log(`resolve start`)
+                resolve(data);
+                //$.log(`resolve end`)
+            }
+        })
+    })
+}
 
 function apDoTask(taskId, taskType, itemId = '', appid = 'activities_platform') {
   //await $.wait(20)
   return new Promise(resolve => {
-    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"channel":4,"linkId":"Vr5e5qokLNCRxNmi4VTW4Q","itemId":"${itemId}"}&appid=${appid}`, `apDoTask`), async (err, resp, data) => {
+    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"channel":4,"linkId":"LsQNxL7iWDlXUs6cFl-AAg","itemId":"${itemId}"}&appid=${appid}`, `apDoTask`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -282,7 +344,7 @@ function apDoTask(taskId, taskType, itemId = '', appid = 'activities_platform') 
 
 function apDoTask2(taskId, taskType, itemId, appid = 'activities_platform') {
   return new Promise(resolve => {
-    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"linkId":"Vr5e5qokLNCRxNmi4VTW4Q","itemId":"${itemId}"}&appid=${appid}`, `apDoTask`), async (err, resp, data) => {
+    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"linkId":"LsQNxL7iWDlXUs6cFl-AAg","itemId":"${itemId}"}&appid=${appid}`, `apDoTask`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -302,7 +364,7 @@ function apDoTask2(taskId, taskType, itemId, appid = 'activities_platform') {
 function apTaskDetail(taskId, taskType) {
   //await $.wait(20)
   return new Promise(resolve => {
-    $.post(taskPostClientActionUrl(`functionId=apTaskDetail&body={"taskType":"${taskType}","taskId":${taskId},"channel":4,"linkId":"Vr5e5qokLNCRxNmi4VTW4Q"}&appid=activities_platform`, `apTaskDetail`), async (err, resp, data) => {
+    $.post(taskPostClientActionUrl(`functionId=apTaskDetail&body={"taskType":"${taskType}","taskId":${taskId},"channel":4,"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`, `apTaskDetail`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -331,7 +393,7 @@ function apTaskDetail(taskId, taskType) {
 function apTaskDrawAward(taskId, taskType) {
   //await $.wait(20)
   return new Promise(resolve => {
-    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"linkId":"Vr5e5qokLNCRxNmi4VTW4Q"}&appid=activities_platform`, `apTaskDrawAward`), async (err, resp, data) => {
+    $.post(taskPostClientActionUrl(`body={"taskType":"${taskType}","taskId":${taskId},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&appid=activities_platform`, `apTaskDrawAward`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -358,7 +420,7 @@ function taskPostClientActionUrl(body, functionId) {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Host': 'api.m.jd.com',
       'Origin': 'https://joypark.jd.com',
-      'Referer': 'https://joypark.jd.com/?activityId=Vr5e5qokLNCRxNmi4VTW4Q&lng=113.387899&lat=22.512678&sid=4d76080a9da10fbb31f5cd43396ed6cw&un_area=19_1657_52093_0',
+      'Referer': 'https://joypark.jd.com/?activityId=LsQNxL7iWDlXUs6cFl-AAg&lng=113.387899&lat=22.512678&sid=4d76080a9da10fbb31f5cd43396ed6cw&un_area=19_1657_52093_0',
       'Cookie': cookie,
     }
   }
