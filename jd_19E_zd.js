@@ -1,7 +1,7 @@
 /*
 
 建议手动先点开一次
-3 8-19/2 * * * jd_19E.js
+33 8-23/3 * * * jd_19E.js
 
 */
 const $ = new Env('热爱奇旅组队');
@@ -43,14 +43,24 @@ $.shareCodesArr = [];
             $.index = i + 1;
             await getUA()
             await get_secretp()
-            if (i < 1) {
-                
-                await promote_pk_getHomeData()
-            } else {
-                console.log(`账号${$.index}去加入队伍：${inviteId}`)
-                await promote_pk_joinGroup()
-                await $.wait(2000)
-            }
+
+                var time = new Date()
+                if (time.getHours() > 19 || time.getHours() < 8) {
+                    console.log(`\n账号${$.index}去瓜分金币\n`)
+                    await promote_pk_getHomeData()
+                    console.log('去瓜分金币。。。')
+                    await promote_pk_divideScores()
+                    console.log('去领取红包。。。')
+                    await promote_pk_receiveAward() //领取红包
+                    //console.log(inviteId)
+                } else {
+                    await promote_pk_getHomeData()
+                    console.log(`\n账号${$.index}去加入队伍：${inviteId}\n`)
+                    await promote_pk_joinGroup()
+                    await $.wait(2000)
+                    
+                }
+            
         }
 
     }
@@ -93,7 +103,7 @@ function get_secretp() {
                             if (data.data && data.data.bizCode === 0) {
                                 secretp = data.data.result.homeMainInfo.secretp
                                 scenceId = data.data.result.homeMainInfo.raiseInfo.scenceMap.scenceId
-                                console.log(secretp)
+                                //console.log(secretp)
                           }
                         } else 
                         if (data.code != 0) {
@@ -126,11 +136,13 @@ function promote_pk_getHomeData() {
                     
                     if (safeGet(data)) {
                         data = JSON.parse(data);
-                        console.log(data.data.result.groupInfo)
-                        inviteId = data.data.result.groupInfo.groupJoinInviteId
+                        //console.log(data.data.result)
+                        if ($.index == 1) inviteId = data.data.result.groupInfo.groupJoinInviteId
                         if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-
+                            if (data.data.result.autoProduceInfo) {
+                                console.log(`今日队伍共 ${data.data.result.groupInfo.groupNum} 人`)
+                                console.log(`共得金币 ${data.data.result.autoProduceInfo.teamProduceScore}`)
+                                console.log(`其中我分得 ${data.data.result.autoProduceInfo.produceScore}`)
                                 
                             }
                         } else {
@@ -180,7 +192,76 @@ function promote_pk_joinGroup() {
     })
 }
 
+function promote_pk_divideScores() {
+    let body = {"ss": { "extraData": { "log": "", "sceneid": "RAZXh5" }, "secretp": secretp, "random": randomString(6)}};//randomString(8)
+    return new Promise((resolve) => {
+        $.post(taskPostUrl("promote_pk_divideScores",body), async(err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    //console.log(data)
+                    if (safeGet(data)) {
+                        data = JSON.parse(data);
+                        if (data.code === 0) {
+                            if (data.data && data['data']['bizCode'] === 0) {
+                                console.log(`瓜分 ${data.data.result.produceScore} 金币成功`)
+                                //console.log('瓜分',data.data)
+                            } else if (data.data.bizCode == -6003) {
+                                console.log(data.data.bizMsg)
+                            }
+                        } else {
+                            console.log(data.data)
+                        }
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data);
+            }
+        })
+    })
+}
 
+function promote_pk_receiveAward() {
+    let body = {};//randomString(8)
+    return new Promise((resolve) => {
+        $.post(taskPostUrl("promote_pk_receiveAward",body), async(err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    
+                    if (safeGet(data)) {
+                        data = JSON.parse(data);
+                        //console.log(data.data.result)
+
+                        if (data.code === 0) {
+                            if (data.data.bizCode == 0) {
+                                console.log(`领取红包 ${data.data.result.value} 元成功`)
+                                console.log(`有效期 ${data.data.result.ext} `)
+
+                            } else if (data.data.bizCode == -4 || data.data.bizCode == -8) {
+                                console.log(data.data.bizMsg)
+                            } else {
+                                console.log(data)
+                            }
+                        } else {
+                            console.log(data)
+                        }
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data);
+            }
+        })
+    })
+}
 
 
 function promote_getFeedDetail(taskId) {
