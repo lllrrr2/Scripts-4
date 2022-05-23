@@ -51,7 +51,7 @@ $.shareCodesArr = [];
                     console.log('去瓜分金币。。。')
                     await promote_pk_divideScores()
                     console.log('去领取红包。。。')
-                    await promote_pk_receiveAward() //领取红包
+                    if (time.getHours() > 21 ) await promote_pk_receiveAward() //领取红包
                     //console.log(inviteId)
                 } else {
                     await promote_pk_getHomeData()
