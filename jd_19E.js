@@ -46,6 +46,7 @@ $.shareCodesArr = [];
     }
     $.newShareCodes = [`ZXASTT0225KkcRBgY9gDXIEvyxfdfIgFjRWn6S7zB55awQ`,`ZXASTT0225KkcR08QpACBcUv3l6ICfAFjRWn6S7zB55awQ`,'ZXASTT0225KkcR0tL_VDTdkv3kKUCdgFjRWn6S7zB55awQ',
     'ZXASTT0205KkcA2Bepg-rQl6swo58FjRWn6S7zB55awQ','ZXASTT010xvx7SR8e_QFjRWn6S7zB55awQ']
+    //if (Date.now().getHours == 16) {
     for (a = 0; a < cookiesArr.length; a++) {
         cookie = cookiesArr[a];
         await get_secretp()
@@ -94,7 +95,7 @@ $.shareCodesArr = [];
                 await $.wait(1500)
             }
     }
-
+    //}
     for (let i = 0; i < cookiesArr.length; i++) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
@@ -133,8 +134,9 @@ $.shareCodesArr = [];
                         switch (task.taskType) {
                             case 7:
                             case 19:
-                                console.log(`去做任务类型19`)
-                                await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
+                                //console.log(`去做任务类型19`)
+                                //if (task.simpleRecordInfoVo.taskToken) console.log(task)
+                                //await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
                                 break
                             case 9:
                                 console.log(`去做任务类型9`)
