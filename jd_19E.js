@@ -160,8 +160,8 @@ $.shareCodesArr = [];
                                 break
                             case 19:
                                 console.log(`去做任务类型19`)
-                                if (task.simpleRecordInfoVo) console.log(`二点三个 `,task)
-                                console.log(task)
+                                //if (task.simpleRecordInfoVo) console.log(`二点三个 `,task)
+                                //console.log(task)
                                 await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
                                 break
                             case 9:
@@ -221,6 +221,7 @@ $.shareCodesArr = [];
                                 await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
                                 break
                             case 26:
+                                console.log(`去做任务类型26`)
                                 var tmp = []
                                 if (task.taskType == 7) {
                                     tmp = task.browseShopVo
@@ -259,6 +260,7 @@ $.shareCodesArr = [];
                                 }
                                 break
                             case 5:
+                                console.log(`去做任务类型5`)
                                 r = await promote_getFeedDetail2(task.taskId)
                                 var t = 0;
                                 for (var o = 0; o < r.browseShopVo.length; o++) {
@@ -272,6 +274,7 @@ $.shareCodesArr = [];
                                 }
                                 break
                             case 21:
+                                console.log(`去做任务类型21`)
                                 for (var o = 0; o < task.brandMemberVos.length; o++) {
                                     if (task.brandMemberVos[o].status == 1) {
                                         console.log(`\n\n ${task.brandMemberVos[o].title}`)
@@ -703,7 +706,7 @@ function taskPostUrl(functionId, body) {
             'Accept-Encoding': 'gzip, deflate, br',
         }
     }
-    console.log(url)
+    //console.log(url)
     return url
 }
 
