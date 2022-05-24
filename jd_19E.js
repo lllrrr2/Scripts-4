@@ -95,7 +95,7 @@ $.shareCodesArr = [];
                 await $.wait(1500)
             }
     }
-    //}
+    //}//助力结束
     for (let i = 0; i < cookiesArr.length; i++) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
@@ -130,13 +130,39 @@ $.shareCodesArr = [];
                     for (var p = 0; p < res.taskVos.length; p++) {
                         task = res.taskVos[p]
                         if (task.status != 1 && task.status != 3) continue
-                        //console.log('当前任务类型 ',task.taskType,task)
+                        console.log('当前任务类型 ',task.taskType,task)
                         switch (task.taskType) {
                             case 7:
+                                console.log(`去做任务类型7`)
+                                var tmp = []
+                                if (task.taskType == 7) {
+                                    tmp = task.browseShopVo
+                                } else {
+                                    tmp = task.shoppingActivityVos
+                                }
+
+                                for (var o = 0; o < tmp.length; o++) {
+                                    console.log(`\n\n ${tmp[o].title?tmp[o].title:tmp[o].shopName}`)
+                                    if (tmp[o].status == 1) {
+                                        conti = true
+                                        await promote_collectScore(tmp[o].taskToken, task.taskId)
+                                    }
+
+                                }
+                                await $.wait(8000)
+                                for (var o = 0; o < tmp.length; o++) {
+                                    if (tmp[o].status == 1) {
+                                        conti = true
+                                        await qryViewkitCallbackResult(tmp[o].taskToken)
+                                    }
+
+                                }
+                                break
                             case 19:
-                                //console.log(`去做任务类型19`)
-                                //if (task.simpleRecordInfoVo.taskToken) console.log(task)
-                                //await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
+                                console.log(`去做任务类型19`)
+                                if (task.simpleRecordInfoVo) console.log(`二点三个 `,task)
+                                console.log(task)
+                                await promote_collectScore(task.simpleRecordInfoVo.taskToken, task.taskId)
                                 break
                             case 9:
                                 console.log(`去做任务类型9`)
@@ -677,7 +703,7 @@ function taskPostUrl(functionId, body) {
             'Accept-Encoding': 'gzip, deflate, br',
         }
     }
-    //console.log(url)
+    console.log(url)
     return url
 }
 
