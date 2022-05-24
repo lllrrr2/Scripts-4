@@ -130,7 +130,7 @@ $.shareCodesArr = [];
                     for (var p = 0; p < res.taskVos.length; p++) {
                         task = res.taskVos[p]
                         if (task.status != 1 && task.status != 3) continue
-                        console.log('当前任务类型 ',task.taskType,task)
+                        //console.log('当前任务类型 ',task.taskType,task)
                         switch (task.taskType) {
                             case 7:
                                 console.log(`去做任务类型7`)
