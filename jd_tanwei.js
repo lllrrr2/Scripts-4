@@ -5,7 +5,7 @@
 活动时间：5月17-6月16
 宝箱陆续开放
 来自：6dylan6/jdpro
-21 0,12,21 26-31,1-16 5,6 * jd_tanwei.js
+31 0,13 26-31,1-16 5,6 * jd_tanwei.js
  */
 
 const $ = new Env('探味奇遇记');
@@ -64,7 +64,9 @@ async function twqyj() {
     for (let key of Object.keys(tk.assignmentList).reverse()){
         let vo = tk.assignmentList[key]
         if (vo.completionFlag || vo.assignmentType == 30) {
-            console.log('任务已完成')
+            console.log('此任务已完成')
+        } else if (new Date(vo.assignmentStartTime).getTime() > Date.now()) {
+            console.log('此任务还没到开放时间:',vo.assignmentStartTime)
         } else {
 		    if (vo.ext && vo.ext.extraType == 'sign1'){
 	              await sign(encryptProjectId,vo.encryptAssignmentId)
