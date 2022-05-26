@@ -13,7 +13,7 @@ let cookiesArr = [],
     cookie = '',
     message;
 let secretp = '',
-    inviteId = [],scenceId = ''
+    inviteIdArr = [],scenceId = '',inviteId ='',num = '',num2 = '',isjoin = true
 
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
@@ -36,14 +36,22 @@ $.shareCodesArr = [];
     }
 
     $.inviteIdCodesArr = {}
-    for (let i = 0; i < cookiesArr.length && true; i++) {
+    for (x = 0; x < 2; x++) {
+        console.log(`\n账号 ${x+1} 去获取组队邀请码`)
+        cookie = cookiesArr[x]
+        await get_secretp()
+        await promote_pk_getHomeData(x+1)
+    }
+    num2 = 1
+    for (let i = cookiesArr.length -1; i > -1 ; i--) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
             $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
             $.index = i + 1;
+            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
             await getUA()
             await get_secretp()
-
+            isjoin = true
                 var time = new Date()
                 if (time.getHours() > 19 || time.getHours() < 8) {
                     console.log(`\n账号${$.index}去瓜分金币\n`)
@@ -55,9 +63,22 @@ $.shareCodesArr = [];
                     //console.log(inviteId)
                 } else {
                     await promote_pk_getHomeData()
-                    console.log(`\n账号${$.index}去加入队伍：${inviteId}\n`)
-                    await promote_pk_joinGroup()
-                    await $.wait(2000)
+                    //console.log(inviteIdArr,num,num2)
+                    if (num > num2) {
+                        
+                        inviteId = inviteIdArr[1]
+                    } else {
+                        
+                        inviteId = inviteIdArr[0]
+                    }
+                    
+                    if ($.index>2 && isjoin) {
+                        console.log(`\n账号${$.index}去加入队伍：${inviteId}\n`)
+                        await promote_pk_joinGroup()
+                    }
+                    await promote_pk_getHomeData()
+                
+                    await $.wait(1000)
                     
                 }
             
@@ -103,7 +124,7 @@ function get_secretp() {
                             if (data.data && data.data.bizCode === 0) {
                                 secretp = data.data.result.homeMainInfo.secretp
                                 scenceId = data.data.result.homeMainInfo.raiseInfo.scenceMap.scenceId
-                                //console.log(secretp)
+                                console.log(secretp)
                           }
                         } else 
                         if (data.code != 0) {
@@ -124,7 +145,7 @@ function get_secretp() {
 
 
 
-function promote_pk_getHomeData() {
+function promote_pk_getHomeData(getinvite) {
     let body = {};//randomString(8)
     return new Promise((resolve) => {
         $.post(taskPostUrl("promote_pk_getHomeData",body), async(err, resp, data) => {
@@ -136,13 +157,18 @@ function promote_pk_getHomeData() {
                     
                     if (safeGet(data)) {
                         data = JSON.parse(data);
-                        //console.log(data.data.result)
-                        if ($.index == 1) inviteId = data.data.result.groupInfo.groupJoinInviteId
+                        
+                        if (getinvite) inviteIdArr.push(data.data.result.groupInfo.groupJoinInviteId) 
+                        
                         if (data.code === 0) {
+                            //console.log(data.data)
                             if (data.data.result.autoProduceInfo) {
-                                console.log(`今日队伍共 ${data.data.result.groupInfo.groupNum} 人`)
+                                console.log(`当前队伍共 ${data.data.result.groupInfo.groupNum} 人`)
+                                if (data.data.result.groupInfo.groupNum > 1) isjoin = false
+                                if (data.data.result.groupInfo.groupName.indexOf('花不')!=-1) num = data.data.result.groupInfo.groupNum
+                                if (data.data.result.groupInfo.groupName.indexOf('石头')!=-1) num2 = data.data.result.groupInfo.groupNum
                                 console.log(`共得金币 ${data.data.result.autoProduceInfo.teamProduceScore}`)
-                                console.log(`其中我分得 ${data.data.result.autoProduceInfo.produceScore}`)
+                                console.log(`其中我分得 ${data.data.result.autoProduceInfo.produceScore}\n\n`)
                                 
                             }
                         } else {
@@ -160,7 +186,7 @@ function promote_pk_getHomeData() {
 }
 
 function promote_pk_joinGroup() {
-    let body = {'inviteId':inviteId,"ss": { "extraData": { "log": "", "sceneid": "RAhomePageh5" }, "secretp": secretp, "random": randomString(6)},'confirmFlag':1};//randomString(8)
+    let body = {'inviteId':inviteId,"ss": { "extraData": { "log": "", "sceneid": "RAhomePageh5" }, "secretp": secretp, "random": randomString(8)},'confirmFlag':1};//randomString(8)
     return new Promise((resolve) => {
         $.post(taskPostUrl("promote_pk_joinGroup",body), async(err, resp, data) => {
             try {
