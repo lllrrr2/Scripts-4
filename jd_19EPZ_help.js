@@ -1,8 +1,4 @@
-//JSRUN引擎2.0，支持多达30种语言在线运行，全仿真在线交互输入输出。 
-if (process.env.JD_19E != "true") {
-    console.log('\n运行\n')
-    //return
-}
+
 
 /*
 33 20 * * * jd_19EPZ_help.js
@@ -37,7 +33,7 @@ $.inviteId  = [];
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  console.log(`\n变量：export PZ="助力码"`);
+  //console.log(`\n变量：export PZ="助力码"`);
   $.inviteIdCodesArr = {}
   for (let i = 0; i < cookiesArr.length && true; i++) {
     if (cookiesArr[i]) {
@@ -47,7 +43,8 @@ $.inviteId  = [];
       await getUA()
     }
   }
-  for (let m = 0; m < 5; m++) {
+  for (let m = 0; m < 8; m++) {
+      cookie = cookiesArr[m]
       await get_secretp()
       await travel_gethelp()
   }
@@ -141,7 +138,7 @@ function travel_gethelp(){
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            
+            console.log(data)
             if (data.code === 0) {
               console.log(`\n\n 成功获取组队码\n`)
               
@@ -222,7 +219,7 @@ function qryViewkitCallbackResult(taskToken){
 }
 
 function taskPostUrl(functionId, body) {
-  return {
+  let url =  {
       //functionId=tigernian_getHomeData&body={}&client=wh5&clientVersion=1.0.0
       url: `${JD_API_HOST}`,
       body: `functionId=${functionId}&body=${escape(JSON.stringify(body))}&client=m&clientVersion=-1&appid=signed_wh5`,
@@ -237,6 +234,8 @@ function taskPostUrl(functionId, body) {
           'Accept-Encoding': 'gzip, deflate, br',
       }
   }
+  //console.log(url)
+  return url
 }
 function taskPostUrl2(functionId,body) {
   return {
