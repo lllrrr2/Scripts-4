@@ -1,3 +1,4 @@
+//JSRUN引擎2.0，支持多达30种语言在线运行，全仿真在线交互输入输出。 
 if (process.env.JD_19E != "true") {
     console.log('\n运行\n')
     //return
@@ -30,7 +31,7 @@ if ($.isNode()) {
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 
 $.inviteId  = [];
-$.inviteId.push(inviteId1);
+//$.inviteId.push(inviteId1);
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -46,6 +47,11 @@ $.inviteId.push(inviteId1);
       await getUA()
     }
   }
+  for (let m = 0; m < 5; m++) {
+      await get_secretp()
+      await travel_gethelp()
+  }
+  console.log($.inviteId)
   for (let m = 0; m < cookiesArr.length; m++) {
     cookie = cookiesArr[m];
     $.index = m + 1;
@@ -75,7 +81,7 @@ $.inviteId.push(inviteId1);
 
       }
     }
-    if($.inviteId .length<1){
+    if($.inviteId.length<1){
       break
     }
 
