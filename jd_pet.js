@@ -73,7 +73,7 @@ let randomCount = $.isNode() ? 20 : 5;
   }
   let thetime = new Date()
   console.log('今天是周' + thetime.getDay() + '小时：' + thetime.getHours())
-  if ($.isNode() && allMessage && $.ctrTemp && (thetime.getDay() === 2 || thetime.getDay() === 5) && thetime.getHours() > 15) {
+  if ($.isNode() && allMessage && $.ctrTemp && thetime.getDay() === 5 && thetime.getHours() > 15) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`)
   }
 })()
