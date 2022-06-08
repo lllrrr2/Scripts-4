@@ -45,7 +45,7 @@ let appId, fingerprint, token, enCryptMethodJD;
         runCK.push(cookiesArr.slice(i, i + 1));
     }
     for (let i = runCK.length - 1; i > -1; i--) {
-        for (var z = 0;z < 3,z++) {
+        for (var z = 0;z < 3; z++) {
         const promiseArr = runCK[i].map((ck, index) => main(ck));
         await Promise.all(promiseArr);
         }
