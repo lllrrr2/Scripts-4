@@ -44,9 +44,11 @@ let appId, fingerprint, token, enCryptMethodJD;
     for (let i = 0; i < cookiesArr.length; i += 1) {
         runCK.push(cookiesArr.slice(i, i + 1));
     }
-    for (let i = 0; i < runCK.length; i++) {
+    for (let i = runCK.length - 1; i > -1; i--) {
+        for (var z = 0;z < 3,z++) {
         const promiseArr = runCK[i].map((ck, index) => main(ck));
         await Promise.all(promiseArr);
+        }
     }
 })().catch((e) => { $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '') }).finally(() => { $.done(); })
 
