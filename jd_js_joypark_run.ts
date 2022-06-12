@@ -2,13 +2,14 @@
 汪汪乐园-跑步+组队
 默认翻倍到0.04红包结束,修改请设置变量
 export JD_JOY_PARK_RUN_ASSETS="0.04"
-20 * * * * jd_joy_park_run.ts
+cron:30 0 * * * *
+30 0 * * * * jd_joy_park_run.ts
 new Env('极速版汪汪赛跑');
 
 **/
 
-import {get, post, o2s, requireConfig, wait} from './utils/TS_USER_AGENTS'
-import {H5ST} from "./utils/h5st"
+import {get, post, o2s, requireConfig, wait} from './function/TS_USER_AGENTS'
+import {H5ST} from "./function/h5st"
 import {existsSync, readFileSync} from "fs";
 import {getDate} from "date-fns";
 
@@ -20,14 +21,14 @@ let assets: number = 0, captainId: string = '', h5stTool: H5ST = null
   let account: { pt_pin: string, joy_park_run: number }[] = []
 
 
-  for (var index = 0; index < cookiesArr.length;index++) {
-    cookie = cookiesArr[index]
+  for (let [index, value] of cookiesArr.entries()) {
+    cookie = value
     UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
     console.log(`\n开始【京东账号${index + 1}】${UserName}\n`)
 
   
 
-    assets = parseFloat(process.env.JD_JOY_PARK_RUN_ASSETS || '0.08')
+    assets = parseFloat(process.env.JD_JOY_PARK_RUN_ASSETS || '0.04')
     let rewardAmount: number = 0
     try {
       h5stTool = new H5ST('448de', 'jdltapp;', fp_448de)
