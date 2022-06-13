@@ -6,7 +6,7 @@
 #dir_shell=/ql/shell
 #. $dir_shell/share.sh
 ## 目录
-dir_root=/ql
+dir_root=/ql/data
 dir_config=$dir_root/config
 dir_scripts=$dir_root/scripts
 dir_log=$dir_root/log
