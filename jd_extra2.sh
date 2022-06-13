@@ -49,7 +49,7 @@ install_node_dependencie(){
 
         node_dependencies_ori_status $1
         if [[ $? = 1 ]]; then
-            [[ $1 = "canvas" ]] && { cnpm uninstall $1; rm -rf /ql/scripts/node_modules/canvas; rm -rf /usr/local/lib/node_modules/lodash/canvas; } || cnpm uninstall $1
+            [[ $1 = "canvas" ]] && { cnpm uninstall $1; rm -rf /ql/data/scripts/node_modules/canvas; rm -rf /usr/local/lib/node_modules/lodash/canvas; } || cnpm uninstall $1
         elif [ $? = 2 ]; then
             [[ $1 = "canvas" ]] && { cnpm uninstall $1 -g; rm -rf /usr/local/lib/node_modules/canvas; } || cnpm uninstall $1 -g
         fi
