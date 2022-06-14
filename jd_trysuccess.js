@@ -84,7 +84,7 @@ if ($.isNode()) {
                 }
             } catch (e) {
             }
-            await $.wait(50 * 1000);
+            await $.wait(5 * 1000);
         }
     }
     //console.log($.notifyMsg)
