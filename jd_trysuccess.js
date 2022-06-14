@@ -69,12 +69,12 @@ if ($.isNode()) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
                             console.log('剩余领取时间：' + $.leftTime)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName||$.nickName}  可免费领取-${title}\n剩余领取时间：${$.leftTime}\n`;
+                            $.notifyMsg += `【账号】${$.index}.${$.nickName || $.UserName}  可免费领取-${title}\n剩余领取时间：${$.leftTime}\n`;
                         } else if(new Date().getTime() > item.endTime + 60 * 60 * 24 * 1000 * 8) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`中奖已超过8天，即将失效-${title}`)
                             console.log('剩余领取时间：' + $.leftTime)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName||$.nickName}  中奖已超过8天，即将失效-${title}\n剩余领取时间：${$.leftTime}\n`;
+                            $.notifyMsg += `【账号】${$.index}.${$.nickName || $.UserName}  中奖已超过8天，即将失效-${title}\n剩余领取时间：${$.leftTime}\n`;
                             
                         } else{
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
