@@ -50,7 +50,7 @@ if ($.isNode()) {
 			  $.canRun = true;
               $.leftTime = ''
 			  await TotalBean();
-			  console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+			  console.log(`\n\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n\n`);
 			  if (!$.isLogin) {
 				$.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
 				if ($.isNode()) {
@@ -69,15 +69,16 @@ if ($.isNode()) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
                             console.log('剩余领取时间：' + $.leftTime)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  可免费领取-${title}\n剩余领取时间：${$.leftTime}\n入口:京东-我的-更多工具-新品试用\n`;
+                            $.notifyMsg += `【账号】${$.index}.${$.UserName||$.nickName}  可免费领取-${title}\n剩余领取时间：${$.leftTime}\n`;
                         } else if(new Date().getTime() > item.endTime + 60 * 60 * 24 * 1000 * 8) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`中奖已超过8天，即将失效-${title}`)
                             console.log('剩余领取时间：' + $.leftTime)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  中奖已超过8天，即将失效-${title}\n剩余领取时间：${$.leftTime}\n入口:京东-我的-更多工具-新品试用\n`;
+                            $.notifyMsg += `【账号】${$.index}.${$.UserName||$.nickName}  中奖已超过8天，即将失效-${title}\n剩余领取时间：${$.leftTime}\n`;
                             
                         } else{
-                            console.log("开始领取两天且少于八天后不推")
+                            let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
+                            console.log("开始领取两天且少于八天,不推-" + title)
                             console.log('剩余领取时间：' + $.leftTime)
                         }
                     }
