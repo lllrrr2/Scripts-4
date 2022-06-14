@@ -159,7 +159,7 @@ function TotalBean() {
                         }
                         if (data.retcode === "0" && data.data.hasOwnProperty("userInfo")) {
                             $.nickName = data.data.userInfo.baseInfo.nickname;
-                            console.log($.nickName)
+                            
                         }
                     } else {
                         $.log('京东返回了空数据');
