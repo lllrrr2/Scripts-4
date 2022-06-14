@@ -48,6 +48,7 @@ if ($.isNode()) {
 			  $.isLogin = true;
 			  $.nickName = '';
 			  $.canRun = true;
+              $.leftTime = ''
 			  await TotalBean();
 			  console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
 			  if (!$.isLogin) {
@@ -63,17 +64,21 @@ if ($.isNode()) {
                 for (let j = 0; j < list.length; j++) {
                     item = list[j]
                     if (item.leftTime) {
+                        $.leftTime = parseInt(item.leftTime / (1000 * 3600 * 24)) + '天' + (Math.round(item.leftTime % (1000 * 3600 * 24)) / (1000 * 3600)).toFixed(2) + '小时'
                         if (new Date().getTime() < item.endTime + 60 * 60 * 24 * 1000 * 2 ) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  可免费领取-${title}\n入口:京东-我的-更多工具-新品试用\n`;
+                            console.log('剩余领取时间：' + $.leftTime)
+                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  可免费领取-${title}\n剩余领取时间：${$.leftTime}\n入口:京东-我的-更多工具-新品试用\n`;
                         } else if(new Date().getTime() > item.endTime + 60 * 60 * 24 * 1000 * 8) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`中奖已超过8天，即将失效-${title}`)
-                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  中奖已超过8天，即将失效-${title}\n入口:京东-我的-更多工具-新品试用\n`;
+                            console.log('剩余领取时间：' + $.leftTime)
+                            $.notifyMsg += `【账号】${$.index}.${$.UserName}  中奖已超过8天，即将失效-${title}\n剩余领取时间：${$.leftTime}\n入口:京东-我的-更多工具-新品试用\n`;
                             
                         } else{
                             console.log("开始领取两天且少于八天后不推")
+                            console.log('剩余领取时间：' + $.leftTime)
                         }
                     }
                 }
@@ -100,11 +105,13 @@ async function try_list() {
                 if (err) {
                     console.log('err', err)
                 } else {
+                    //console.log(data)
                     data = JSON.parse(data);
 					
 					for (const vo of data.data.list) {	 
 					if($.runFalag == false) break
 					  $.trialNames = vo.trialName
+                      
 					//console.log(`\n${$.trialNames}`);
 					}
                 }
@@ -159,7 +166,7 @@ function TotalBean() {
                         }
                         if (data.retcode === "0" && data.data.hasOwnProperty("userInfo")) {
                             $.nickName = data.data.userInfo.baseInfo.nickname;
-                            
+                        
                         }
                     } else {
                         $.log('京东返回了空数据');
