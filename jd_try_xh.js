@@ -220,7 +220,7 @@ let args_xh = {
                 }
                 $.isLimit = false;
                 // 获取tabList的，不知道有哪些的把这里的注释解开跑一遍就行了
-                 //await try_tabList();
+                //await try_tabList();
                 // return;
                 $.isForbidden = false
                 $.wrong = false
@@ -303,7 +303,7 @@ function requireConfig() {
             //IOS等用户直接用NobyDa的jd $.cookie
             $.cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
         }
-        for(let keyWord of $.innerKeyWords) args_xh.titleFilters.push(keyWord)
+        //for(let keyWord of $.innerKeyWords) args_xh.titleFilters.push(keyWord)
         console.log(`共${$.cookiesArr.length}个京东账号\n`)
         if(args_xh.env){
             console.log('=====环境变量配置如下=====')
@@ -338,6 +338,7 @@ function try_tabList() {
             "previewTime": ""
         });
         let option = taskurl_xh('newtry', 'try_tabList', body)
+        
         $.post(option, (err, resp, data) => {
             try{
                 if(err){
@@ -377,9 +378,11 @@ function try_feedsList(tabId, page) {
             "previewTime": ""
         });
         let option = taskurl_xh('newtry', 'try_feedsList', body)
+        //console.log(option)
         $.post(option, (err, resp, data) => {
             try{
                 if(err){
+                    console.log(err)
                     if(JSON.stringify(err) === `\"Response code 403 (Forbidden)\"`){
                         $.isForbidden = true
                         console.log('账号被京东服务器风控，不再请求该帐号')
@@ -592,15 +595,15 @@ function try_MyTrials(page, selected) {
 
 function taskurl_xh(appid, functionId, body = JSON.stringify({})) {
     return {
-        "url": `${URL}?appid=${appid}&functionId=${functionId}&clientVersion=10.3.4&client=wh5&body=${encodeURIComponent(body)}`,
+        "url": `${URL}?appid=${appid}&functionId=${functionId}&clientVersion=10.4.0&client=wh5&body=${encodeURIComponent(body)}`,
         'headers': {
-            'Cookie': `${$.cookie} __jda=1.1.1.1.1.1;`,
-            'user-agent': 'jdapp;iPhone;10.1.2;15.0;ff2caa92a8529e4788a34b3d8d4df66d9573f499;network/wifi;model/iPhone13,4;addressid/2074196292;appBuild/167802;jdSupportDarkMode/1;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-            'Referer': 'https://prodev.m.jd.com/',
+            'Host': "api.m.jd.com",
+            'Cookie': $.cookie + ';__jda=122270672.164968436537539553282.1649684365.1655215816.1655258995.99',
+            'user-agent': 'jdapp;android;10.4.0;;;appBuild/92610;ef/1;ep/{"hdid":"JM9F1ywUPwflvMIpYPok0tt5k9kW4ArJEU3lfLhxBqw=","ts":1655258994971,"ridx":-1,"cipher":{"sv":"CJO=","ad":"DzG4ZwPtDWTrZJO3DWSyEG==","od":"DwS1ZWHwYwYmC2HuZQZtCK==","ov":"CzK=","ud":"DzG4ZwPtDWTrZJO3DWSyEG=="},"ciphertype":5,"version":"1.2.0","appname":"com.jingdong.app.mall"};jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045745 Mobile Safari/537.36',
             'origin': 'https://prodev.m.jd.com/',
             'Accept': 'application/json,text/plain,*/*',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-cn',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
             'Content-Type': 'application/x-www-form-urlencoded',
         },
     }
