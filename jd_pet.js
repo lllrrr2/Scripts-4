@@ -94,7 +94,6 @@ console.log(`共${cookiesArr.length}个京东账号\n`);
   if ($.isNode() && allMessage && $.ctrTemp && thetime.getDay() === 5 && thetime.getHours() > 15) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`)
   }
-    }
 })()
 .catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
