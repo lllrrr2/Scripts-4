@@ -59,12 +59,15 @@ if ($.isNode()) {
 				continue
 			  }
             let data = await try_list()
+            
             try {
                 list = data.data.list
                 for (let j = 0; j < list.length; j++) {
                     item = list[j]
                     if (item.leftTime) {
                         $.leftTime = parseInt(item.leftTime / (1000 * 3600 * 24)) + '天' + (Math.round(item.leftTime % (1000 * 3600 * 24)) / (1000 * 3600)).toFixed(2) + '小时'
+                        
+                        if (item.trialName.indexOf("手机卡") != -1 || item.trialName.indexOf("试驾") != -1) continue
                         if (new Date().getTime() < item.endTime + 60 * 60 * 24 * 1000 * 2 ) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
@@ -78,7 +81,7 @@ if ($.isNode()) {
                             
                         } else{
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
-                            console.log("开始领取两天且少于八天,不推-" + title)
+                            console.log("开始领取两天且少于八天,不推送：" + title)
                             console.log('剩余领取时间：' + $.leftTime)
                         }
                     }
@@ -99,7 +102,7 @@ if ($.isNode()) {
 
 async function try_list() {
     return new Promise((resolve, reject) => {
-        console.log(`拉取申请成功列表...`)
+        console.log(`开始拉取申请成功列表...`)
         let option = taskurl_xh()
         $.post(option, (err, resp, data) => {
             try {
