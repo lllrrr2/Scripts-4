@@ -8,14 +8,14 @@
 ============Quantumultx===============
 [task_local]
 #京喜财富岛互助
-13 0,14,22 * * * https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js, tag=京喜财富岛互助, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
+33 0,14 * * * https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js, tag=京喜财富岛互助, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "13 0,14,22 * * *" script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js,tag=京喜财富岛互助
+cron "33 0,14 * * *" script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js,tag=京喜财富岛互助
 
 ===============Surge=================
-京喜财富岛互助 = type=cron,cronexp="13 0,14,22 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js
+京喜财富岛互助 = type=cron,cronexp="33 0,14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js
 
 ============小火箭=========
 京喜财富岛互助 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/KR/main/jd_cfd_help.js, cronexpr="33 0,14 * * *", timeout=3600, enable=true
