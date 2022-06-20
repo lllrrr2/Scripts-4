@@ -220,13 +220,13 @@ let args_xh = {
                 }
                 $.isLimit = false;
                 // 获取tabList的，不知道有哪些的把这里的注释解开跑一遍就行了
-                //await try_tabList();
+                // await try_tabList();
                 // return;
                 $.isForbidden = false
                 $.wrong = false
                 size = 1
                 while(trialActivityIdList.length < args_xh.maxLength && $.isForbidden === false){
-                    if(args_xh.unified && trialActivityIdList.length !== 0) break;
+                    if(args_xh.unified && trialActivityIdList.length !== 0 && $.index != 1) break;
                     if($.nowTabIdIndex === args_xh.tabId.length){
                         console.log(`tabId组已遍历完毕，不在获取商品\n`);
                         break;
@@ -393,6 +393,7 @@ function try_feedsList(tabId, page) {
                 } else {
                     data = JSON.parse(data)
                     let tempKeyword = ``;
+                    //console.log(JSON.stringify(data.data.feedList))
                     if (data.data) {
                         $.nowPage === args_xh.totalPages ? $.nowPage = 1 : $.nowPage++;
                         console.log(`第 ${size++} 次获取试用商品成功，tabId:${args_xh.tabId[$.nowTabIdIndex]} 的 第 ${page}/${args_xh.totalPages} 页`)
