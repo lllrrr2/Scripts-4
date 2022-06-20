@@ -187,6 +187,9 @@ let args_xh = {
             })
             return
         }
+        //console.log(args_xh.tabId)
+        args_xh.tabId.sort(function(){return Math.random()-0.5;})
+        console.log(args_xh.tabId)
         for (let i = 0; i < $.cookiesArr.length; i++) {
             if ($.cookiesArr[i]) {
                 $.cookie = $.cookiesArr[i];
@@ -219,6 +222,7 @@ let args_xh = {
                     trialActivityTitleList = []
                 }
                 $.isLimit = false;
+
                 // 获取tabList的，不知道有哪些的把这里的注释解开跑一遍就行了
                 // await try_tabList();
                 // return;
