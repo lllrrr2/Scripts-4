@@ -189,7 +189,7 @@ let args_xh = {
         }
         //console.log(args_xh.tabId)
         args_xh.tabId.sort(function(){return Math.random()-0.5;})
-        console.log(args_xh.tabId)
+        //console.log(args_xh.tabId)
         for (let i = 0; i < $.cookiesArr.length; i++) {
             if ($.cookiesArr[i]) {
                 $.cookie = $.cookiesArr[i];
@@ -238,8 +238,8 @@ let args_xh = {
                         await try_feedsList(args_xh.tabId[$.nowTabIdIndex], $.nowPage)  //获取对应tabId的试用页面
                     }
                     if(trialActivityIdList.length < args_xh.maxLength){
-                        console.log(`间隔等待中，请等待 3 秒\n`)
-                        await $.wait(3000);
+                        console.log(`间隔等待中，请等待 6 秒\n`)
+                        await $.wait(6200);
                     }
                 }
                 if ($.isForbidden === false && $.isLimit === false) {
@@ -252,7 +252,7 @@ let args_xh = {
                         }
                         await try_apply(trialActivityTitleList[i], trialActivityIdList[i])
                         //console.log(`间隔等待中，请等待 ${args_xh.applyInterval} ms\n`)
-                        const waitTime = generateRandomInteger(5000, 8000);
+                        const waitTime = generateRandomInteger(6000, 10000);
                         console.log(`随机等待${waitTime}ms后继续`);
                         await $.wait(waitTime);
                     }
@@ -388,7 +388,7 @@ function try_feedsList(tabId, page) {
                 if(err){
                     console.log(err)
                     if(JSON.stringify(err) === `\"Response code 403 (Forbidden)\"`){
-                        $.isForbidden = true
+                        //$.isForbidden = true
                         console.log('账号被京东服务器风控，不再请求该帐号')
                     } else {
                         console.log(JSON.stringify(err))
@@ -603,7 +603,7 @@ function taskurl_xh(appid, functionId, body = JSON.stringify({})) {
         "url": `${URL}?appid=${appid}&functionId=${functionId}&clientVersion=10.4.0&client=wh5&body=${encodeURIComponent(body)}`,
         'headers': {
             'Host': "api.m.jd.com",
-            'Cookie': $.cookie + ';__jda=122270672.164968436537539553282.1649684365.1655215816.1655258995.99',
+            'Cookie': $.cookie + ' __jda=153791336.50693756962229582.1646272666.1657160807.1657178056.118',
             'user-agent': 'jdapp;android;10.4.0;;;appBuild/92610;ef/1;ep/{"hdid":"JM9F1ywUPwflvMIpYPok0tt5k9kW4ArJEU3lfLhxBqw=","ts":1655258994971,"ridx":-1,"cipher":{"sv":"CJO=","ad":"DzG4ZwPtDWTrZJO3DWSyEG==","od":"DwS1ZWHwYwYmC2HuZQZtCK==","ov":"CzK=","ud":"DzG4ZwPtDWTrZJO3DWSyEG=="},"ciphertype":5,"version":"1.2.0","appname":"com.jingdong.app.mall"};jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045745 Mobile Safari/537.36',
             'origin': 'https://prodev.m.jd.com/',
             'Accept': 'application/json,text/plain,*/*',
