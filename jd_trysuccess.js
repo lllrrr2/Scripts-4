@@ -67,7 +67,7 @@ if ($.isNode()) {
                     if (item.leftTime) {
                         $.leftTime = parseInt(item.leftTime / (1000 * 3600 * 24)) + '天' + (Math.round(item.leftTime % (1000 * 3600 * 24)) / (1000 * 3600)).toFixed(2) + '小时'
                         
-                        if (item.trialName.indexOf("手机卡") != -1 || item.trialName.indexOf("试驾") != -1) continue
+                        if (item.trialName.indexOf("手机卡") != -1 || item.trialName.indexOf("试驾") != -1 || item.orderStatus == 2) continue
                         if (new Date().getTime() < item.endTime + 60 * 60 * 24 * 1000 * 2 ) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
