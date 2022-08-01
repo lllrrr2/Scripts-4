@@ -1,4 +1,4 @@
-\/**
+/**
 特务之明星送好礼
 一次性脚本。请禁用！
 cron 36 2,19 * * * jd_superBrandStar.js
@@ -40,7 +40,11 @@ if ($.isNode()) {
             }
             continue
         }
-        await main();
+        try {
+            await main();
+        }catch (e) {
+            console.log(`好像账号黑号~~~`);
+        }
         if ($.flag) return;
     }
 
