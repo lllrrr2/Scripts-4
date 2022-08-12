@@ -61,6 +61,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
         continue
       }
       await accountCheck();
+      if (!$.accountCheck) continue
       while (!$.hasDone) {
         await $.wait(3000)
       }
