@@ -105,7 +105,7 @@ let args_xh = {
      * 已内置对应的 成人类 幼儿类 宠物 老年人类关键词，请勿重复添加
      * 可设置环境变量：JD_TRY_TITLEFILTERS，关键词与关键词之间用@分隔
      * */
-    titleFilters: process.env.JD_TRY_TITLEFILTERS && process.env.JD_TRY_TITLEFILTERS.split('@') || [],
+    titleFilters: process.env.JD_TRY_TITLEFILTERS || process.env.JD_TRY_TITLEFILTERS.split('@') || [],
     /*
      * 试用价格(中了要花多少钱)，高于这个价格都不会试用，小于等于才会试用，意思就是
      * A商品原价49元，现在试用价1元，如果下面设置为10，那A商品将会被添加到待提交试用组，因为1 < 10
@@ -373,7 +373,7 @@ function requireConfig() {
             console.log(`unified: ${typeof args_xh.unified}, ${args_xh.unified}`)
             console.log(`jdPrice: ${typeof args_xh.jdPrice}, ${args_xh.jdPrice}`)
             console.log(`tabId: ${typeof args_xh.tabId}, ${args_xh.tabId}`)
-            console.log(`titleFilters: ${typeof args_xh.titleFilters}, ${args_xh.titleFilters}`)
+            console.log(`titleFilters: ${typeof args_xh.titleFilters}`,args_xh.titleFilters)
             console.log(`trialPrice: ${typeof args_xh.trialPrice}, ${args_xh.trialPrice}`)
             console.log(`minSupplyNum: ${typeof args_xh.minSupplyNum}, ${args_xh.minSupplyNum}`)
             console.log(`applyNumFilter: ${typeof args_xh.applyNumFilter}, ${args_xh.applyNumFilter}`)
@@ -496,6 +496,7 @@ function try_feedsList(tabId, page) {
                                 if (args_xh.whiteList) {
                                     if (args_xh.whiteListKeywords.some(fileter_word => item.skuTitle.includes(fileter_word))) {
                                         args_xh.printLog ? console.log(`商品白名单通过，将加入试用组，trialActivityId为${item.trialActivityId}\n`) : ''
+                                        console.log(`商品白名单通过，将加入试用组，商品为：${item.skuTitle}\n`)
                                         trialActivityIdList.push(item.trialActivityId)
                                         trialActivityTitleList.push(item.skuTitle)
                                     }
@@ -511,8 +512,10 @@ function try_feedsList(tabId, page) {
                                         args_xh.printLog ? console.log(`商品被过滤，商品原价低于预设商品原价 \n`) : ''
                                     } else if (args_xh.titleFilters.some(fileter_word => item.skuTitle.includes(fileter_word) ? tempKeyword = fileter_word : '')) {
                                         args_xh.printLog ? console.log(`商品被过滤，含有关键词 ${tempKeyword}\n`) : ''
+                                        console.log(`商品被过滤，含有关键词 ${tempKeyword}\n`)
                                     } else {
                                         args_xh.printLog ? console.log(`商品通过，将加入试用组，trialActivityId为${item.trialActivityId}\n`) : ''
+                                        console.log(`商品白名单通过，将加入试用组，商品为：${item.skuTitle}\n`)
                                         trialActivityIdList.push(item.trialActivityId)
                                         trialActivityTitleList.push(item.skuTitle)
                                     }
