@@ -546,48 +546,8 @@ function try_feedsList(tabId, page) {
     })
 }
 
-function geth5st(body) {
-    let opt = {
-        url: `https://api.nolanstore.top/h5st`,
-        body: JSON.stringify({
-            "appId": "a8ade",
-            "functionId": "try_apply",
-            "body": body,
-            "appid": "newtry",
-            "client": "wh5",
-            "clientVersion": "11.0.2",
-            "ua": 'jdapp;iPhone;10.1.2;15.0;ff2caa92a8529e4788a34b3d8d4df66d9573f499;network/wifi;model/iPhone13,4;addressid/2074196292;appBuild/167802;jdSupportDarkMode/1;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-            "pin": encodeURIComponent($.UserName)
-        }),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    },str='';
-    return new Promise((resolve) => {
-        $.post(opt, (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(JSON.stringify(err));
-                } else {
-                    data = JSON.parse(data);
-                    if (data.code == 200) {
-                        str = data.body;
-                    } else {
-                        $.log('连接服务失败',data.msg);
-                    }
-                }
-            } catch (e) {
-                console.log(e, resp);
-            } finally {
-                resolve(str);
-            }
-        })
-    })
-}
-
-
-async function try_apply(title, activityId) {
-    return new Promise(async (resolve, reject) => {
+function try_apply(title, activityId) {
+    return new Promise((resolve, reject) => {
         console.log(`申请试用商品提交中...`)
         args_xh.printLog ? console.log(`商品：${title}`) : ''
         args_xh.printLog ? console.log(`id为：${activityId}`) : ''
@@ -595,8 +555,6 @@ async function try_apply(title, activityId) {
             "activityId": activityId,
             "previewTime": ""
         });
-        body = await geth5st(body);
-        if(!body) return;
         let option = taskurl_xh('newtry', 'try_apply', body)
         $.get(option, (err, resp, data) => {
             try{
@@ -701,7 +659,7 @@ function try_MyTrials(page, selected) {
 
 function taskurl_xh(appid, functionId, body = JSON.stringify({})) {
     return {
-        "url": `${URL}?appid=${appid}&functionId=${functionId}&clientVersion=10.4.0&client=wh5&body=${encodeURIComponent(body)}&h5st=${$.h5st}`,
+        "url": `${URL}?appid=${appid}&functionId=${functionId}&clientVersion=10.4.0&client=wh5&body=${encodeURIComponent(body)}&h5st=20220723220957698;2494920658892912;8f1e3;tk02wadfd1c1c18nubUoKIHGJDgLCKHXBdcMjnANQklb5qvE9IYanSqmFfjqvY17Dk+rOzGmRZT715oQUIhrK8xLXy/9;475fdf768defc7685abd84cc541f5c7b4752034d39f8e74f9dc7f7c230474d93;3.1;1658585397698;62f4d401ae05799f14989d31956d3c5f27ba522a81bb61f6036f822a201e8a4603bafa12258ad560ec63ca2a25914ee724da1499a0485b236981f66595ff3bc97b327e015ef38634a29f6398b9ebf1a0bfd89efb1afbf99700725dfdf9125af0a46875e20ba43fe47238a3d13ccdf894c6519c56fd8c57f00dd2e4181a142540e1da682a91f6d268949ab6d0152ea6da`,
         'headers': {
             'Host': "api.m.jd.com",
             'Cookie': $.cookie + ' __jda=153791336.50693756962229582.1646272666.1657160807.1657178056.118',
