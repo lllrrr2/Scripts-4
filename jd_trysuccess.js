@@ -58,7 +58,8 @@ if ($.isNode()) {
 				}
 				continue
 			  }
-            let data = await try_list()
+            for (var x = 1; x < 3; x++) {
+            let data = await try_list(x)
             
             try {
                 list = data.data.list
@@ -67,7 +68,7 @@ if ($.isNode()) {
                     if (item.leftTime) {
                         $.leftTime = parseInt(item.leftTime / (1000 * 3600 * 24)) + '天' + (Math.round(item.leftTime % (1000 * 3600 * 24)) / (1000 * 3600)).toFixed(2) + '小时'
                         
-                        if (item.trialName.indexOf("手机卡") != -1 || item.trialName.indexOf("试驾") != -1 || item.orderState == 2) continue
+                        if (item.trialName.indexOf("手机卡") != -1 || item.trialName.indexOf("试驾") != -1 || item.orderState == 2 || item.trialName.indexOf("微信小程序") != -1) continue
                         if (new Date().getTime() < item.endTime + 60 * 60 * 24 * 1000 * 2 ) {
                             let title=item.trialName.length>15?item.trialName.substr(0,30)+'...':item.trialName
 							console.log(`可免费领取-${title}`)
@@ -88,7 +89,8 @@ if ($.isNode()) {
                 }
             } catch (e) {
             }
-            await $.wait(5 * 1000);
+            await $.wait(3 * 1000);
+            }
         }
     }
     //console.log($.notifyMsg)
@@ -100,10 +102,10 @@ if ($.isNode()) {
     console.error(`❗️ ${$.name} 运行错误！\n${e}`)
 }).finally(() => $.done())
 
-async function try_list() {
+async function try_list(page) {
     return new Promise((resolve, reject) => {
-        console.log(`开始拉取申请成功列表...`)
-        let option = taskurl_xh()
+        console.log(`\n开始拉取申请成功列表第${page}页...\n`)
+        let option = taskurl_xh(page)
         $.post(option, (err, resp, data) => {
             try {
                 if (err) {
@@ -128,10 +130,10 @@ async function try_list() {
     })
 }
 
-function taskurl_xh() {
+function taskurl_xh(page) {
     return {
 			url: "https://api.m.jd.com/client.action",
-            body: `appid=newtry&functionId=try_MyTrials&clientVersion=10.3.6&client=wh5&body=%7B%22page%22%3A1%2C%22selected%22%3A2%2C%22previewTime%22%3A%22%22%7D`,
+            body: `appid=newtry&functionId=try_MyTrials&clientVersion=10.3.6&client=wh5&body=%7B%22page%22%3A${page}%2C%22selected%22%3A2%2C%22previewTime%22%3A%22%22%7D`,
             headers: {
                 'origin': 'https://prodev.m.jd.com',
 				'user-agent': 'jdapp;iPhone;10.1.2;15.0;ff2caa92a8529e4788a34b3d8d4df66d9573f499;network/wifi;model/iPhone13,4;addressid/2074196292;appBuild/167802;jdSupportDarkMode/1;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
