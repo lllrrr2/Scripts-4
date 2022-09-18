@@ -10,16 +10,16 @@
 ==========================Quantumultx=========================
 [task_local]
 #jd免费水果
-7 0,6,16,22 * * * jd_fruit_help.js, tag=东东农场内部互助, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png, enabled=true
+20 4,16 * * * jd_fruit_help.js, tag=东东农场内部互助, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png, enabled=true
 =========================Loon=============================
 [Script]
-cron "7 0,6,16,22 * * *" script-path=jd_fruit_help.js,tag=东东农场内部互助
+cron "20 4,16 * * *" script-path=jd_fruit_help.js,tag=东东农场内部互助
 
 =========================Surge============================
-东东农场内部互助 = type=cron,cronexp="7 0,6,16,22 * * *",wake-system=1,timeout=3600,script-path=jd_fruit_help.js
+东东农场内部互助 = type=cron,cronexp="20 4,16 * * *",wake-system=1,timeout=3600,script-path=jd_fruit_help.js
 
 =========================小火箭===========================
-东东农场内部互助 = type=cron,script-path=jd_fruit_help.js, cronexpr="7 0,6,16,22 * * *", timeout=3600, enable=true
+东东农场内部互助 = type=cron,script-path=jd_fruit_help.js, cronexpr="20 4,16 * * *", timeout=3600, enable=true
 
 export DO_TEN_WATER_AGAIN="" 默认再次浇水
 
@@ -35,10 +35,9 @@ let cookiesArr = [],
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
     //     //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-      '84d724474fc944d9a36939838d1908c1@f2fdca4281664687befad7e8a7edd1a4@dd1f4b2253184cb5a0f8cf8f46b361b7@4d4ee912249847b69373d7b091084745@482a04b38fb54730a0317a08b6781658',
-  '84d724474fc944d9a36939838d1908c1@f2fdca4281664687befad7e8a7edd1a4@dd1f4b2253184cb5a0f8cf8f46b361b7@4d4ee912249847b69373d7b091084745@482a04b38fb54730a0317a08b6781658',
-  '84d724474fc944d9a36939838d1908c1@f2fdca4281664687befad7e8a7edd1a4@dd1f4b2253184cb5a0f8cf8f46b361b7@4d4ee912249847b69373d7b091084745@482a04b38fb54730a0317a08b6781658',
-  '84d724474fc944d9a36939838d1908c1@f2fdca4281664687befad7e8a7edd1a4@dd1f4b2253184cb5a0f8cf8f46b361b7@4d4ee912249847b69373d7b091084745@482a04b38fb54730a0317a08b6781658',
+    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
+    //     //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
+    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
 ]
 let newShareCodes=[];
 let message = '',
@@ -130,7 +129,7 @@ let NoNeedCodes = [];
             $.index = i + 1;
             $.isLogin = true;
             $.nickName = '';
-            await TotalBean();
+            //await TotalBean();
             console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
             if (!$.isLogin) {
                 $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
@@ -174,7 +173,7 @@ async function jdFruit() {
             console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
             //message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
             await masterHelpShare(); //助力好友
-			await turntableFarm();//天天抽奖得好礼
+						await turntableFarm();//天天抽奖得好礼
             if ($.farmInfo.treeState === 2 || $.farmInfo.treeState === 3) {
                 option['open-url'] = urlSchema;
                 //$.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
@@ -632,45 +631,47 @@ async function signForFarm() {
  * 初始化农场, 可获取果树及用户信息API
  */
 async function initForFarm() {
-    return new Promise(resolve => {
-        const option = {
-            url: `${JD_API_HOST}?functionId=initForFarm`,
-      body: `body=${escape(JSON.stringify({ "version":14}))}&appid=wh5&clientVersion=9.1.0`,
-            headers: {
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate, br",
-                "accept-language": "zh-CN,zh;q=0.9",
-                "cache-control": "no-cache",
-                "cookie": cookie,
-                "origin": "https://home.m.jd.com",
-                "pragma": "no-cache",
-                "referer": "https://home.m.jd.com/myJd/newhome.action",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-site",
-                "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            timeout: 10000,
-        };
-        $.post(option, (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log('\n东东农场: API查询请求失败 ‼️‼️');
-                    console.log(JSON.stringify(err));
-                    $.logErr(err);
-                } else {
-                    if (safeGet(data)) {
-                        $.farmInfo = JSON.parse(data)
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve();
-            }
-        })
+  // const functionId = arguments.callee.name.toString();
+  // $.farmInfo = await request(functionId, {"babelChannel":"121","sid":"3c52b5f17ab2a42398939a27887eaf8w","un_area":"17_1381_0_0","version":18,"channel":1});
+  return new Promise(resolve => {
+    const option =  {
+      url: `${JD_API_HOST}?functionId=initForFarm`,
+      body: `body=${escape(JSON.stringify({"version":4}))}&appid=wh5&clientVersion=9.1.0`,
+      headers: {
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "cache-control": "no-cache",
+        "cookie": cookie,
+        "origin": "https://home.m.jd.com",
+        "pragma": "no-cache",
+        "referer": "https://home.m.jd.com/myJd/newhome.action",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      timeout: 10000,
+    };
+    $.post(option, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n东东农场: API查询请求失败 ‼️‼️');
+          console.log(JSON.stringify(err));
+          $.logErr(err);
+        } else {
+          if (safeGet(data)) {
+            $.farmInfo = JSON.parse(data)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
     })
+  })
 }
 
 // 初始化任务列表API
