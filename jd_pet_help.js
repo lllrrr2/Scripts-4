@@ -91,7 +91,7 @@ console.log(`共${cookiesArr.length}个京东账号\n`);
 		console.log('\n互助码收集完毕，开始执行内部助力...\n');
 	}
 	
-    for (let i = 0; i < cookiesArr.length; i++) {
+    for (let i = cookiesArr.length - 1; i > -1; i--) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
             $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
