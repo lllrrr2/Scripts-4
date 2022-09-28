@@ -63,9 +63,11 @@ async function sign_all() {
         return
     }
     await $.wait(3000)
+    msg.push('\n****账号 ' + $.index + '：' + ($.nickName || $.UserName) + '****')
     for (const order of $.signFreeOrderInfoList) {
         // console.debug('now:', order)
         $.productName = order.productName
+        
         await sign(order.orderId)
         await $.wait(3000)
     }
@@ -100,13 +102,14 @@ function query() {
                         } else {
 				
                             $.signFreeOrderInfoList = data.data.signFreeOrderInfoList
+                            //console.log(data.data.signFreeOrderInfoList)
                             if (first_flag) {
                                 first_flag = false
                                 console.log("脚本也许随时失效,请注意");
-                                msg.push("脚本也许随时失效,请注意")
+                                //msg.push("\n脚本也许随时失效,请注意")
                                 if (data.data.risk == true) {
                                     console.log("风控用户,可能有异常");
-                                    msg.push("风控用户,可能有异常")
+                                    //msg.push("风控用户,可能有异常")
                                 }
                             }
                         }
@@ -123,6 +126,50 @@ function query() {
     })
 }
 
+function query1(orderId) {
+    return new Promise(resolve => {
+        $.get(taskGetUrl("signFreeHome", { "linkId": activityId }), async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.error(`${JSON.stringify(err)}`)
+                } else {
+                    // console.debug('query:', data)
+                    data = JSON.parse(data)
+                    $.signFreeOrderInfoList = data.data.signFreeOrderInfoList
+                    if (data.success == true) {
+                        if (!data.data.signFreeOrderInfoList) {
+                            //console.log("没有需要签到的商品,请到京东极速版[签到免单]购买商品");
+                            //msg.push("没有需要签到的商品,请到京东极速版[签到免单]购买商品")
+                        } else {
+				
+                            $.signFreeOrderInfoList = data.data.signFreeOrderInfoList
+                            //console.log(data.data.signFreeOrderInfoList)
+                            var lb = data.data.signFreeOrderInfoList
+                            for (var x in lb) {
+                                if (lb[x].orderId == orderId) {
+                                    console.log('当前商品可返：' + lb[x].freeAmount)
+                                    msg.push('当前商品可返：' + lb[x].freeAmount)
+                                    console.log('当前签到状态：' + lb[x].hasSignDays + '/' + lb[x].needSignDays)
+                                    msg.push('当前签到状态：' + lb[x].hasSignDays + '/' + lb[x].needSignDays + '\n')
+
+                                }
+                            }
+
+                        }
+                    }else{
+                        console.error("失败");
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve(data);
+            }
+        })
+    })
+}
+
+
 function sign(orderId) {
     return new Promise(resolve => {
         // console.debug('sign orderId:', orderId)
@@ -130,19 +177,22 @@ function sign(orderId) {
             try {
                 if (err) {
                     console.error(`${JSON.stringify(err)}`)
+                    msg_temp = $.productName + ' ' + (JSON.stringify(err) || '未知错误')
                 } else {
                     // console.debug('sign:', data)
                     data = JSON.parse(data)
                     let msg_temp
                     if (data.success) {
-			    
+                        //console.log( $.productName + ' 签到成功')
                         msg_temp = $.productName + ' 签到成功'
                     } else {
+                        //console.log($.productName + ' ' + (data.errMsg || '未知错误'))
                         msg_temp = $.productName + ' ' + (data.errMsg || '未知错误')
                     }
                     console.log(msg_temp)
-			msg.push(($.nickName || $.UserName) + ':')
+			        
                     msg.push(msg_temp)
+                    await query1(orderId)
                 }
             } catch (e) {
                 $.logErr(e, resp)
