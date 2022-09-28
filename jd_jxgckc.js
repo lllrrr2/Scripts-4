@@ -13,17 +13,18 @@ let showMsg = '';
     for (let i = 0; i < $.cookieArr.length; i++) {
         $.currentCookie = $.cookieArr[i];
         $.index = i + 1;
+        var ismsg = false
         if ($.currentCookie) {
             const userName = decodeURIComponent(
                 $.currentCookie.match(/pt_pin=(.+?);/) && $.currentCookie.match(/pt_pin=(.+?);/)[1],
             );
             $.log(`\n开始【京东账号${i + 1}】${userName}`);
-            await getCommodityList();
+            await getCommodityList(ismsg);
 
             console.log(showMsg);
 
             //只发送给第一个号
-            if (i ===0) {
+            if (i === 0 && ismsg) {
                 // 账号${$.index} - ${$.UserName}
                 await notify.sendNotify(`${$.name}`, `${showMsg}`);
                 break
@@ -51,12 +52,13 @@ function getCookies() {
     return true;
 }
 
-function getCommodityList() {
+function getCommodityList(ismsg) {
     return new Promise(resolve => {
         $.get(taskUrl('diminfo/GetCommodityList', `flag=2&pageNo=1&pageSize=10000`), async (err, resp, data) => {
             try {
                 const { ret, data: { commodityList = [] } = {}, msg } = JSON.parse(data);
                 // $.log(`\n获取商品详情：${msg}\n${$.showLog ? data : ''}`);
+                if (commodityList.length > 0) ismsg = true
                 for (let index = 0; index < commodityList.length; index++) {
                     const { commodityId, stockNum } = commodityList[index];
                     await getCommodityDetail(commodityId, stockNum);
