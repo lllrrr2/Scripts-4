@@ -123,7 +123,7 @@ let NoNeedCodes = [];
       }
   }
   console.log('\n【互助码已经收集完毕，现在开始账号内部互助，请稍等...】\n');
-    for (let i = 0; i < cookiesArr.length; i++) {
+    for (let i = cookiesArr.length - 1; i > -1; i--) {
         if (cookiesArr[i]) {
             cookie = cookiesArr[i];
             $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
