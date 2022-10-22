@@ -63,7 +63,7 @@ let lnrun = 0;
             $.index = i + 1;
             $.isLogin = true;
             $.nickName = '';
-            //await TotalBean();
+            await TotalBean();
             console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
             if (!$.isLogin) {
                 $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
@@ -88,9 +88,11 @@ let lnrun = 0;
 						await $.wait(30 * 1000);
         }
     }
-    if ($.isNode() && allMessage && $.ctrTemp) {
-        await notify.sendNotify(`${$.name}`, `${allMessage}`)
-    }
+  let thetime = new Date()
+  console.log('今天是周' + thetime.getDay() + '小时：' + thetime.getHours())
+  if ($.isNode() && allMessage && $.ctrTemp && thetime.getDay() === 5 && thetime.getHours() > 15) {
+    await notify.sendNotify(`${$.name}`, `${allMessage}`)
+  }
 })()
 .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
