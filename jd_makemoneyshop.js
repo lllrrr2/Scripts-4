@@ -63,14 +63,14 @@ let helpinfo = {};
             }
 
             await getinfo(1);
-            await $.wait(1000);
+            await $.wait(300);
         }
     }
     if (shareId.length > 0) {
         console.log('\n\n开始助力...')
         for (let j = 0; j < shareId.length; j++) {
             console.log('\n去助力--> ' + shareId[j]);
-            for (let i = 0; i < cookiesArr.length; i++) {
+            for (let i = cookiesArr.length - 1; i > -1 ; i--) {
                 if (cookiesArr[i]) {
                     cookie = cookiesArr[i];
                     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -80,8 +80,8 @@ let helpinfo = {};
                     if (helpinfo[$.UserName].nohelp) { console.log('已无助力次数了'); continue };
                     if (helpinfo[$.UserName].hot) { console.log('可能黑了，跳过！'); continue };
                     await help(shareId[j]);
-                    console.log('随机等待2-5秒');
-                    await $.wait(parseInt(Math.random() * 3000 + 2000, 10))
+                    console.log('随机等待1-3秒');
+                    await $.wait(parseInt(Math.random() * 2000 + 500, 10))
                 }
             }
         }
@@ -89,7 +89,7 @@ let helpinfo = {};
         console.log('无助立马请设置！！\n')
     }
 
-    console.log('开始领取任务奖励...')
+    console.log('\n开始领取任务奖励...')
 
     for (let i = 0; i < cookiesArr.length; i++) {
         if (cookiesArr[i]) {
@@ -137,6 +137,7 @@ function getinfo(xc) {
                             let sId = data.data.shareId;
                             helpinfo[$.UserName].sId = `${sId}`;
                             console.log('助力码：' + sId);
+                            if ($.index < 6) shareId.push(sId)
                             console.log('当前营业金：' + data.data.canUseCoinAmount);
                         }
                     } else {
