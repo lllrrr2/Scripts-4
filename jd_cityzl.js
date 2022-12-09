@@ -16,6 +16,7 @@ let exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE === "true" ? true 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let uuid, UA;
+let thetime = new Date()
 $.shareCodes = []
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -101,7 +102,7 @@ let inviteCodes = ['ryUXaoNZTBDY0PCG9uQoSvOe7RF_sHr', 'ryUXv0FNzAVMkPHSY7N_-YfC6
     }
     await $.wait(1000)
     await getInviteInfo();//雇佣
-    if (exchangeFlag) {
+    if (exchangeFlag && thetime.getHours() > 8) {
       const res = await city_lotteryAward();//抽奖
       if (res && res > 0) {
         for (let i = 0; i < new Array(res).fill('').length; i++) {
