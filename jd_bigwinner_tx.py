@@ -90,39 +90,9 @@ class Userinfo:
             self.shareUuid = home_res['data']['shareId']
             logger.info(f"车头账户[{self.name}]：已获取助力码[{self.shareUuid}]")
             logger.info(f"车头账户[{self.name}]：当前营业币约[{home_res['data']['canUseCoinAmount']}]元")
-        self.GetUserTaskStatusList()
+        #self.GetUserTaskStatusList()
         return self.exchange_query()
-        '''
-        if self.need_help:
-            logger.info(f"当前从{Userinfo.index}继续")
-            for cookie in Userinfo.cookie_obj[Userinfo.index:]:
-                if cookie.pt_pin == self.pt_pin:
-                    continue
-                if cookie.account_hot:
-                    continue
-                res = cookie.getData('guesthelp', self.shareUuid)
-                if res['code'] == 147:  # 火爆
-                    cookie.account_hot = True
-                    logger.info(f"工具人账户[{cookie.user_index}][{cookie.name}]：{res['msg']}")
-                if res['code'] == 1007:
-                    logger.info(f"工具人账户[{cookie.user_index}][{cookie.name}]：{res['msg']}")
-                if res['code'] == 1008:
-                    logger.info(f"工具人账户[{cookie.user_index}][{cookie.name}]：{res['msg']}")
-                if str(res).find("助力任务已完成") > -1:
-                    self.reward(invite_taskId)
-                if res['code'] == 0:
-                    self.reward(invite_taskId)
-                    self.invite_success += 1
-                    logger.info(f"工具人账户[{cookie.user_index}][{cookie.name}]：助力成功，当前助力成功{self.invite_success}次")
 
-                if self.invite_success >= need_invite:
-                    logger.info(f"车头账户[{self.name}]：助力已满")
-                    return self.exchange_query()
-                Userinfo.index += 1
-                # time.sleep(round(random.uniform(0.7, 1.3), 2))
-
-        else:
-            return self.exchange_query()'''
 
     def exchange_query(self):
         url = f'https://wq.jd.com/makemoneyshop/exchangequery?g_ty=h5&g_tk=&appCode={appCode}&activeId={activeId}&sceneval=2'
