@@ -3,15 +3,12 @@
 Python 3.9.7
 作者：doubi
 日期：2022年10月30日
-注：脚本运行后会生成一个black.txt,之后如果出现车头pin找不到的情况下，请在black.txt搜索然后删除
-注意事项 pin 为助力pin 必须保证ck在里面
-作者要求 注释不能删除  否则后续不再更新
-作者授权发布KR库。搬运请完整保留注释。
-环境变量说明：
-export dyjpin="需要助力的pin值"  
-
-cron: 6 6 6 6 *
-new Env('赚钱大赢家提现');
+多个&隔开
+export dyjpin="需要提现的pin值"
+export DYJ_NotCash="不提现的金额"
+cron: 0 0 0 * * *
+new Env('赚钱大赢家-定时提现');
+TY在原作者基础上删减更改，优化提取
 """
 
 import os
@@ -27,7 +24,7 @@ import traceback
 from hashlib import sha1
 from urllib.parse import quote_plus, unquote_plus, quote
 
-activity_name = "京东极速版-赚钱大赢家"
+activity_name = "京东极速版-赚钱大赢家-定时提现"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(lineno)d %(message)s",
@@ -38,12 +35,7 @@ index = 0
 h5st_appid = 'd06f1'
 appCode = 'msc588d6d5'
 activeId = '63526d8f5fe613a6adb48f03'
-task_fn = ['打扫店铺']
-invite_taskId = None
-need_invite = 0
-not_tx = [0.3]
-black_user_file = 'black'
-
+not_tx=[]
 
 class Userinfo:
     cookie_obj = []
@@ -53,9 +45,10 @@ class Userinfo:
         global index
         index += 1
         self.user_index = index
+        self.uuid=''.join(str(uuid.uuid4()).split('-')) #15587980619082418
         self.cookie = cookie
         try:
-            self.pt_pin = re.findall(r'pt_pin=(.*?);', self.cookie)[0]
+            self.pt_pin = unquote_plus(re.findall(r'pt_pin=([^; ]+)(?=;?)', self.cookie)[0])
         except Exception:
             logger.info(f"取值错误['pt_pin']：{traceback.format_exc()}")
             return
@@ -66,53 +59,52 @@ class Userinfo:
         Userinfo.cookie_obj.append(self)
         self.sha = sha1(str(self.pt_pin).encode('utf-8')).hexdigest()
         self.headers = {
-            "Host": "wq.jd.com",
-            "Cookie": self.cookie + f"sid={self.sha}",
+            "Host": "api.m.jd.com",
+            "Cookie": self.cookie + f"; sid={self.sha}; visitkey={uuid}",
             "User-Agent": self.UA,
-            "Referer": f"https://wqs.jd.com/sns/202210/20/make-money-shop/guest.html?activeId={activeId}&type=sign&shareId=&__navVer=1",
+            "origin": "https://wqs.jd.com",
+            #"Referer": f"https://wqs.jd.com/sns/202210/20/make-money-shop/guest.html?activeId={activeId}&type=sign&shareId=&__navVer=1",
+            "Referer": "https://wqs.jd.com/"
         }
         self.shareUuid = ""
         self.invite_success = 0
         self.task_list = []
         self.need_help = False
 
-    def getData(self, task_name, shareId):
-        url = f'https://wq.jd.com/makemoneyshop/{task_name}?g_ty=h5&g_tk=&appCode={appCode}&activeId={activeId}&shareId={shareId}&_stk=activeId,shareId&_ste=1&sceneval=2'
-        res = requests.get(url=url, headers=self.headers, timeout=10).json()
-        return res
-
     def UserTask(self):
-        home_res = self.getData('home', '')
-        if home_res['code'] != 0:
-            logger.info(f"车头账户[{self.name}]：{home_res['msg']}")
-            return
-        else:
-            self.shareUuid = home_res['data']['shareId']
-            logger.info(f"车头账户[{self.name}]：已获取助力码[{self.shareUuid}]")
-            logger.info(f"车头账户[{self.name}]：当前营业币约[{home_res['data']['canUseCoinAmount']}]元")
-        #self.GetUserTaskStatusList()
-        return self.exchange_query()
-
-
-    def exchange_query(self):
-        url = f'https://wq.jd.com/makemoneyshop/exchangequery?g_ty=h5&g_tk=&appCode={appCode}&activeId={activeId}&sceneval=2'
+        global not_tx
+        t=int(time.time() * 1000) #1671188533831
+        body=quote(json.dumps({"activeId":activeId,"sceneval":2,"buid":325,"appCode":appCode,"time":t,"signStr":""})) #07a9d66103b6ae8c0afd1dec831027bf
+        t=t+1
+        url = f'https://api.m.jd.com/api?functionId=makemoneyshop_exchangequery&appid=jdlt_h5&channel=jxh5&cv=1.2.5&clientVersion=1.2.5&client=jxh5&uuid={self.uuid}&cthr=1&body={body}&t={t}&loginType=2'
+        self.headers["Host"]="api.m.jd.com"
         res = requests.get(url=url, headers=self.headers).json()
         if res['code'] == 0:
-            logger.info(f"车头账户[{self.name}]：获取微信提现信息成功")
+            logger.info(f"获取微信提现信息成功")
+            stockPersonDayLimit=int(res['data']['stockPersonDayLimit'])#用户日库存限额
+            stockPersonDayUsed=int(res['data']['stockPersonDayUsed'])#用户今天提现多少次
             canUseCoinAmount = float(res['data']['canUseCoinAmount'])
-            logger.info(f"车头账户[{self.name}]：当前余额[{canUseCoinAmount}]元")
-            for data in res['data']['cashExchangeRuleList'][::-1]:
-                if float(data['cashoutAmount']) not in not_tx:
-                    if canUseCoinAmount >= float(data['cashoutAmount']):
-                        logger.info(f"车头账户[{self.name}]：当前余额[{canUseCoinAmount}]元,符合提现规则[{data['cashoutAmount']}]门槛")
-                        rule_id = data['id']
-                        if self.tx(rule_id):
-                            break
-
-                    else:
-                        logger.info(f"车头账户[{self.name}]：当前余额[{canUseCoinAmount}]元,不足提现[{data['cashoutAmount']}]门槛")
-                else:
-                    logger.info(f"车头账户[{self.name}]：当前余额[{canUseCoinAmount}]元,不提现[{not_tx}]门槛")
+            logger.info(f"当前余额[{canUseCoinAmount}]元")
+            if stockPersonDayUsed>=stockPersonDayLimit:
+                logger.info(f"当前提现次数已经达到上限[{stockPersonDayLimit}]次")
+            elif 'exchangeRecordList' in res['data']:
+                logger.info(f"已有提现进行中，请等待完成！")
+            else:
+                for data in res['data']['cashExchangeRuleList'][::-1]:#倒序
+                    if data['exchangeStatus']==1:
+                        if canUseCoinAmount >= float(data['cashoutAmount']):
+                            if float(data['cashoutAmount']) not in not_tx:
+                                logger.info(f"当前余额[{canUseCoinAmount}]元,符合提现规则[{data['cashoutAmount']}]门槛")
+                                rule_id = data['id']
+                                if self.tx(rule_id):break
+                            else:logger.info(f"当前余额[{canUseCoinAmount}]元,不提现[{not_tx}]门槛")
+                        else:logger.info(f"当前余额[{canUseCoinAmount}]元,不足提现[{data['cashoutAmount']}]门槛")
+                    elif data['exchangeStatus']==2:logger.info(f"{data['name']},来晚了咯都被抢光了")
+                    elif data['exchangeStatus']==3:logger.info(f"{data['name']},已兑换")
+                    elif data['exchangeStatus']==4:logger.info(f"{data['name']},已抢光")
+                    else:logger.info(f"未知状态：{data}")
+        else:
+            print(res)
 
     def tx(self, rule_id):
         url = f'https://wq.jd.com/prmt_exchange/client/exchange?g_ty=h5&g_tk=&appCode={appCode}&bizCode=makemoneyshop&ruleId={rule_id}&sceneval=2'
@@ -136,83 +128,9 @@ class Userinfo:
             logger.info(f"车头账户[{self.name}]：{res}")
             return False
 
-    def GetUserTaskStatusList(self):
-        global invite_taskId, need_invite
-        url = f'https://wq.jd.com/newtasksys/newtasksys_front/GetUserTaskStatusList?g_ty=h5&g_tk=&appCode={appCode}&__t={getTime()}&source=makemoneyshop&bizCode=makemoneyshop&sceneval=2'
-        res = requests.get(url=url, headers=self.headers, timeout=10).json()
-        if res['ret'] == 0:
-            msg = []
-            for taskid, task in enumerate(res['data']['userTaskStatusList'], 1):
-                taskName = task['taskName']
-                reward = int(task['reward']) / 100
-                taskId = task['taskId']
-                configTargetTimes = task['configTargetTimes']
-                status = str(task['gettaskStatus'])
-                if taskName == '邀请好友打卡':
-                    self.invite_success = task['realCompletedTimes']
-                    if invite_taskId is None:
-                        invite_taskId = task['taskId']
-                        logger.info(f"已成功获取邀请好友打卡任务ID:{invite_taskId}")
-                    if need_invite == 0:
-                        need_invite = int(task['configTargetTimes'])
-                    if self.invite_success < need_invite:
-                        self.need_help = True
-                        logger.info(
-                            f"最高可邀请[{need_invite}]人,目前已邀请[{self.invite_success}]人,还需邀请[{int(need_invite) - int(self.invite_success)}]人")
-                    else:
-                        logger.info(f"最高可邀请[{need_invite}]人,目前已邀请[{self.invite_success}]人,助力已满，换号")
-
-                self.task_list.append(
-                    {
-                        "status": status,
-                        "taskName": taskName,
-                        "taskId": taskId,
-                        "configTargetTimes": configTargetTimes
-                    }
-                )
-                msg.append(
-                    f"{taskid} : {taskName} -- {reward}个营业币 -- {status.replace('1', '未完成').replace('2', '已完成')}")
-
-            print('\n'.join(msg))
-            self.do_task()
-
-    def reward(self, taskId):
-        url = f'https://wq.jd.com/newtasksys/newtasksys_front/Award?g_ty=h5&g_tk=&appCode={appCode}&__t={getTime()}&source=makemoneyshop&taskId={taskId}&bizCode=makemoneyshop&sceneval=2'
-        self.headers[
-            'Referer'] = f'https://wqs.jd.com/sns/202210/20/make-money-shop/index.html?activeId={activeId}&lng=118.389971&lat=24.974751&sid={self.sha}&un_area=16_1341_1343_44855'
-        res = requests.get(url=url, headers=self.headers, timeout=10).json()
-        if res['ret'] == 0:
-            logger.info(f"车头账户[{self.name}]：领取成功")
-        else:
-            logger.info(f"车头账户[{self.name}]：{res['msg']}")
-
-    def do_task(self):
-        for task in self.task_list:
-            if task['taskName'] in task_fn and task['status'] != "2":
-                logger.info(f"车头账户[{self.name}]：去做[{task['taskName']}]")
-                self.reward(task['taskId'])
-
 
 def getTime():
     return int(time.time() * 1000)
-
-
-def black_user():
-    if os.path.exists(f'{black_user_file}.txt'):
-        with open(f'{black_user_file}.txt', 'r') as f:
-            return f.read().split('&')
-    else:
-        with open(f'{black_user_file}.txt', 'a'):
-            logger.info(f"文件:{black_user_file}不存在，创建")
-        return []
-
-
-def del_black(pin):
-    cookie_copy = Userinfo.cookie_obj.copy()
-    for cookie in cookie_copy:
-        if pin in cookie.pt_pin and pin != '':
-            Userinfo.cookie_obj.remove(cookie)
-
 
 def main():
     try:
@@ -257,7 +175,6 @@ def main():
                 continue
             with open(f'{black_user_file}.txt', 'a') as w:
                 w.write(cookie.pt_pin + '&')
-
 
 if __name__ == '__main__':
     main()
