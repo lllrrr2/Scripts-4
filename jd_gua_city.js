@@ -36,7 +36,7 @@ let inviteCodes = [
 ]
 $.shareCodesArr = [];
 $.toStatus = false
-let token = ''
+let token = 'trxpmpmkwe3437l1'
 $.token = process.env.gua_log_token || token // token
 
 !(async () => {
